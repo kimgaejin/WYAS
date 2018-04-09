@@ -37,7 +37,7 @@ public class Joystick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointer
     // ===========[[외부에서 값 호출]]
     // 조이스틱의 x값, y값을 반환합니다.
 
-    public float GetGorizontalValue()
+    public float GetHorizontalValue()
     {
         return inputVector.x;
     }
@@ -66,9 +66,6 @@ public class Joystick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointer
             // 터치하고 화면 끝까지 당길수도 있으니 단위벡터로 만듭니다.
             inputVector = new Vector3(pos.x * stickSensitivity, pos.y * stickSensitivity, 0);
             inputVector = (inputVector.magnitude > 1.0f) ? inputVector.normalized : inputVector;
-
-            Debug.Log("Pos.x" + pos.x);
-            Debug.Log("inputVector" + inputVector);
 
             // 조이스틱 이미지를 터치한 좌표값으로 이동시킵니다.
             joystickImg.rectTransform.anchoredPosition
