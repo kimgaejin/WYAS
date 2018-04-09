@@ -7,6 +7,7 @@ public class PlayerState : MonoBehaviour {
     // references of objects and scripts and components
     private GameObject keypadCanvas;
     private Joystick joystick;
+    private Rigidbody2D rigid;
 
     // setting
     private float horizonSpeed = 0.05f;
@@ -17,17 +18,20 @@ public class PlayerState : MonoBehaviour {
 
     void Awake()
     {
-        isFix = false;
-        canMove = true;
+        InitializeBitSwitch();
+        InitializeComponent();
         InitializeKeypad();
     }
     
     void Update()
     {
-        if (isFix == false)
-        {
+        if (isFix == false) { rigid.velocity = 0; }
+        else { 
             Move();
         }
+        
+        
+        
     }
 
     private void Move()
@@ -37,6 +41,18 @@ public class PlayerState : MonoBehaviour {
         float horizon;
         horizon = joystick.GetHorizontalValue();
         this.transform.position += horizon * horizonSpeed * Vector3.right;
+
+    }
+
+    private void InitializeBitSwitch()
+    {
+        isFix = false;
+        canMove = true;
+    }
+
+    private void InitializeComponent()
+    {
+        rigid = this.GameObject.GetComponent<Rigidbody2D>();
     }
 
     private void InitializeKeypad()
