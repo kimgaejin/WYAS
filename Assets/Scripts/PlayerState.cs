@@ -4,29 +4,39 @@ using UnityEngine;
 
 public class PlayerState : MonoBehaviour {
 
+    // references of objects and scripts and components
     private GameObject keypadCanvas;
     private Joystick joystick;
 
+    // setting
+    private float horizonSpeed = 0.05f;
+
+    // bit switch
+    private bool isFix;
     private bool canMove;
 
     void Awake()
     {
+        isFix = false;
         canMove = true;
         InitializeKeypad();
     }
     
     void Update()
     {
-        Move();
+        if (isFix == false)
+        {
+            Move();
+        }
     }
 
-    public void Move()
+    private void Move()
     {
         if (canMove == false) return;
 
         float horizon;
         horizon = joystick.GetHorizontalValue();
-        this.transform.position += horizon * Vector3.right;
+        this.transform.position += horizon * horizonSpeed * Vector3.right;
     }
 
     private void InitializeKeypad()
