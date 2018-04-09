@@ -25,7 +25,7 @@ public class PlayerState : MonoBehaviour {
     
     void Update()
     {
-        if (isFix == false) { rigid.velocity = 0; }
+        if (isFix == false) { rigid.velocity = Vector2.zero; }
         else { 
             Move();
         }
@@ -52,7 +52,7 @@ public class PlayerState : MonoBehaviour {
 
     private void InitializeComponent()
     {
-        rigid = this.GameObject.GetComponent<Rigidbody2D>();
+        rigid = this.gameObject.GetComponent<Rigidbody2D>();
     }
 
     private void InitializeKeypad()
