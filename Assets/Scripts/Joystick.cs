@@ -52,8 +52,6 @@ public class Joystick : MonoBehaviour, IDragHandler, IPointerUpHandler, IPointer
     // 터치패드(이미지)를 누르고 있을 때 발동되는 함수입니다.
     public virtual void OnDrag(PointerEventData ped)
     {
-        Debug.Log("Joystick >>> OnDrag()");
-
         Vector2 pos;
         // 지정된 지역 사각형이 터치된다면 true를 반환합니다.
         if (RectTransformUtility.ScreenPointToLocalPointInRectangle(bgImg.rectTransform, ped.position, ped.pressEventCamera, out pos))

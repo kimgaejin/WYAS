@@ -7,7 +7,29 @@ public class PlayerState : MonoBehaviour {
     private GameObject keypadCanvas;
     private Joystick joystick;
 
+    private bool canMove;
+
     void Awake()
+    {
+        canMove = true;
+        InitializeKeypad();
+    }
+    
+    void Update()
+    {
+        Move();
+    }
+
+    public void Move()
+    {
+        if (canMove == false) return;
+
+        float horizon;
+        horizon = joystick.GetHorizontalValue();
+        this.transform.position += horizon * Vector3.right;
+    }
+
+    private void InitializeKeypad()
     {
         joystick = null;
         keypadCanvas = null;
@@ -17,20 +39,6 @@ public class PlayerState : MonoBehaviour {
 
         joystick = keypadCanvas.transform.FindChild("Joystick").GetComponent<Joystick>();
         if (joystick == null) Debug.Log("error: can't not find joystick at player");
-    }
-    
-    void Update()
-    {
-        float horizon, vertical;
-        horizon = joystick.GetHorizontalValue();
-        vertical = joystick.GetVerticalValue();
-        this.transform.position += horizon * Vector3.right;
-        this.transform.position += vertical * Vector3.up;
-    }
-
-    public void move()
-    {
-
     }
     
 }
