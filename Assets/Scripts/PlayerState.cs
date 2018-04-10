@@ -40,7 +40,6 @@ public class PlayerState : MonoBehaviour {
 
     void OnTriggerStay2D(Collider2D other)
     {
-        Debug.Log("충돌중");
         if (other.tag == "ground")
         {
             float otherSizeX = other.bounds.size.x;
@@ -52,8 +51,6 @@ public class PlayerState : MonoBehaviour {
 
             if (distanceX < otherSizeX/2 + spr.bounds.size.x/2 && distanceY >= otherSizeY/2)
             {
-                Debug.Log("distanceX " + distanceX);
-                Debug.Log("distanceY " + distanceY);
                 if (rigid.velocity.y <= 0)
                 {
                     isJumping = false;
@@ -100,6 +97,12 @@ public class PlayerState : MonoBehaviour {
         }
 		
 		isJumping = true;
+    }
+
+    private void Interact()
+    {
+
+
     }
 
     private void InitializeBitSwitch()
