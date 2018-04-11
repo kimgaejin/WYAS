@@ -13,6 +13,8 @@ public class PlayerState : MonoBehaviour {
     // setting
     private float horizonSpeed = 0.05f;
 	private float jumpPower = 5.0f;
+    private float horizon;
+    private float vertical;
 
     // save
     private Vector3 fixedPoint = Vector3.zero;
@@ -22,6 +24,8 @@ public class PlayerState : MonoBehaviour {
     private bool canMove;
     private bool isJumping;
     private bool canJump;
+    private bool isInteracting;
+    private bool canInteract;
 
 
     void Awake()
@@ -40,7 +44,7 @@ public class PlayerState : MonoBehaviour {
 
     void OnTriggerStay2D(Collider2D other)
     {
-        if (other.tag == "ground")
+        if (other.tag == "Ground")
         {
             float otherSizeX = other.bounds.size.x;
             float otherSizeY = other.bounds.size.y;
@@ -68,14 +72,17 @@ public class PlayerState : MonoBehaviour {
         }
         if (canMove == false) return;
 
-        float horizon;
-       
         //horizon = joystick.GetHorizontalValue();  // 조이스틱용
-
+        //vertical = joystick.VerticaltalValue();  // 조이스틱용
         // 키보드용
+
         if (Input.GetKey(KeyCode.A)) horizon = -1.0f;
         else if (Input.GetKey(KeyCode.D)) horizon = 1.0f;
         else  horizon = 0;
+
+        if (Input.GetKey(KeyCode.W)) vertical = 1.0f;
+        else if (Input.GetKey(KeyCode.S)) vertical = -1.0f;
+        else vertical = 0;
 
         this.transform.position += horizon * horizonSpeed * Vector3.right;
 
@@ -101,8 +108,7 @@ public class PlayerState : MonoBehaviour {
 
     private void Interact()
     {
-
-
+        
     }
 
     private void InitializeBitSwitch()
@@ -111,6 +117,8 @@ public class PlayerState : MonoBehaviour {
         canMove = true;
         canJump = true;
         isJumping = true;
+        isInteracting = false;
+        canInteract = true;
     }
 
     private void InitializeComponent()
@@ -121,6 +129,9 @@ public class PlayerState : MonoBehaviour {
 
     private void InitializeKeypad()
     {
+        horizon = 0.0f;
+        vertical = 0.0f;
+
         joystick = null;
         keypadCanvas = null;
 
