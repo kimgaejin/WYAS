@@ -10,11 +10,16 @@ public class PlayerState : MonoBehaviour {
     private Rigidbody2D rigid;
     private SpriteRenderer spr;
 
+    private Collider2D curObj;
+    private Collider2D adjacentObj;
+    private ObjectProperty curObjAct;
+
     // setting
     private float horizonSpeed = 0.05f;
 	private float jumpPower = 5.0f;
     private float horizon;
     private float vertical;
+    private bool isFacedR;
 
     // save
     private Vector3 fixedPoint = Vector3.zero;
@@ -28,21 +33,36 @@ public class PlayerState : MonoBehaviour {
     private bool canInteract;
 
 
-    void Awake()
+    private void Awake()
     {
         InitializeBitSwitch();
         InitializeComponent();
         InitializeKeypad();
     }
     
-    void Update()
+    private void Update()
     {
         Move();
         Jump();
-        
+        CheckColliders();
+
+        if (adjacentObj != null) Debug.Log("adP: "+adjacentObj.transform.position);
+
+        if (curObj == null)
+        {
+            Debug.Log("curObj is null");
+        }
+        else
+        {
+            Debug.Log("There is curObj");
+            curObjAct = null;
+            curObjAct = curObj.GetComponent<ObjectProperty>();
+            if (curObjAct == null) Debug.Log("error:curObjAct is null");
+            curObjAct.IsInteracting();
+        }
     }
 
-    void OnTriggerStay2D(Collider2D other)
+    private void OnTriggerStay2D(Collider2D other)
     {
         if (other.tag == "Ground")
         {
@@ -62,6 +82,39 @@ public class PlayerState : MonoBehaviour {
             }
         }
     }
+
+
+
+    // =====================[외부 스크립트에서 참조용 함수]
+
+    public void makeMove(bool flag)
+    {
+        if (flag == true) canMove = true;
+        else canMove = false;
+    }
+
+    public void makeJump(bool flag)
+    {
+        if (flag == true) canJump = true;
+        else canJump = false;
+    }
+
+    public void makeHorizonspeed(float in_horizonSpeed = 0.05f)
+    {
+        horizonSpeed = in_horizonSpeed;
+    }
+
+    public bool GetIsJumping()
+    {
+        return isJumping;
+    }
+
+    public float GetHorizonSpeed()
+    {
+        return horizonSpeed;
+    }
+
+    // =====================[이 스크립트에서 참조용 함수]
 
     private void Move()
     {
@@ -86,6 +139,9 @@ public class PlayerState : MonoBehaviour {
 
         this.transform.position += horizon * horizonSpeed * Vector3.right;
 
+        if (horizon > 0) isFacedR = true;
+        else if (horizon < 0) isFacedR = false;
+
         fixedPoint = this.transform.position;
     }
 
@@ -104,6 +160,49 @@ public class PlayerState : MonoBehaviour {
         }
 		
 		isJumping = true;
+    }
+
+    private void CheckColliders()
+    {
+        Collider2D[] colls = Physics2D.OverlapBoxAll(transform.position, new Vector2(2.0f, 2.0f), 0.0f, 1 << 11, 0);
+        adjacentObj = null;
+        foreach (Collider2D col in colls)
+        {
+            ObjectProperty objState = null;
+            objState = col.GetComponent<ObjectProperty>();
+
+            Vector3 colPoint = col.transform.position;
+
+            // 혹시 플레이어 + 오브젝트 높이 보다 차이나는지 확인
+            if (Mathf.Abs(transform.position.y - colPoint.y) < spr.bounds.size.y/2 + objState.GetSize().y/2)
+            {
+                // distanceX가 양수면 플레이어가 오른쪽에 있음.
+                float distanceX = transform.position.x - colPoint.x;
+                // 거리가 그 오브젝트의 충돌범위에 들어와있는지 확인.
+                if (Mathf.Abs(distanceX) <= objState.GetRangeX()) {
+                    // 보고있는 방향에 있는 오브젝트인지 확인.
+                    if ( (distanceX >= 0 && isFacedR == false)
+                        || (distanceX < 0 && isFacedR == true))
+                    {
+                        // 이미 인접한 오브젝트가 설정되어있는지 확인..
+                        if (adjacentObj != null)
+                        {
+                            // 거리가 더 가까운지 확인.
+                            if (Mathf.Abs(transform.position.x - adjacentObj.transform.position.x)
+                                < Mathf.Abs(transform.position.x - col.transform.position.x))
+                            {
+                                adjacentObj = col;
+                            }
+                        }
+                        // 인접한 오브젝트가 없었다면 얘가 인접한 오브젝트.
+                        else
+                        {
+                            adjacentObj = col;
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private void Interact()
@@ -125,6 +224,8 @@ public class PlayerState : MonoBehaviour {
     {
         rigid = this.gameObject.GetComponent<Rigidbody2D>();
         spr = this.transform.FindChild("pGraphic").GetComponent<SpriteRenderer>();
+        curObj = null;
+        isFacedR = true;
     }
 
     private void InitializeKeypad()

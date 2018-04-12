@@ -16,9 +16,8 @@ public class ObjectManager : MonoBehaviour {
     private List<Transform> collideList = new List<Transform>();    // 충돌중인 obj 모음
    
     // setting
-    private float gravityScale = 9.8f;
 
-    // refernce form other objects
+    // refernce from other objects
     
 
     private void Awake()
