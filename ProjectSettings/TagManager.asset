@@ -4,8 +4,9 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Ground
-  - Box
+  - GROUND
+  - BOX
+  - PLAYER
   layers:
   - Default
   - TransparentFX
@@ -17,10 +18,10 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - obj
-  - 
-  - 
+  - PLAYER
+  - OBJECT
+  - GROUND
+  - BACKGROUND
   - 
   - 
   - 

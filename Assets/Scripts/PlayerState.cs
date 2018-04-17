@@ -21,6 +21,9 @@ public class PlayerState : MonoBehaviour {
     private float vertical;
     private bool isFacedR;
 
+    private Vector3 considerObjectVector;
+    private float considerObjectRange;
+
     // save
     private Vector3 fixedPoint = Vector3.zero;
 
@@ -31,10 +34,12 @@ public class PlayerState : MonoBehaviour {
     private bool canJump;
     private bool isInteracting;
     private bool canInteract;
+    private bool onGravity;
 
 
     private void Awake()
     {
+        InitializedSetting();
         InitializeBitSwitch();
         InitializeComponent();
         InitializeKeypad();
@@ -45,45 +50,26 @@ public class PlayerState : MonoBehaviour {
         Move();
         Jump();
         CheckColliders();
-
-        if (adjacentObj != null) Debug.Log("adP: "+adjacentObj.transform.position);
-
-        if (curObj == null)
-        {
-            Debug.Log("curObj is null");
-        }
-        else
-        {
-            Debug.Log("There is curObj");
-            curObjAct = null;
-            curObjAct = curObj.GetComponent<ObjectProperty>();
-            if (curObjAct == null) Debug.Log("error:curObjAct is null");
-            curObjAct.IsInteracting();
-        }
+        Interact();
     }
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        if (other.tag == "Ground")
+        float otherSizeX = other.bounds.size.x;
+        float otherSizeY = other.bounds.size.y;
+        float distanceX = this.transform.position.x - other.transform.position.x;
+        float distanceY = this.transform.position.y - other.transform.position.y;
+
+        distanceX = Mathf.Abs(distanceX);
+        if (distanceX < otherSizeX/2 + spr.bounds.size.x/2 && distanceY >= otherSizeY/2)
         {
-            float otherSizeX = other.bounds.size.x;
-            float otherSizeY = other.bounds.size.y;
-            float distanceX = this.transform.position.x - other.transform.position.x;
-            float distanceY = this.transform.position.y - other.transform.position.y;
-
-            distanceX = Mathf.Abs(distanceX);
-
-            if (distanceX < otherSizeX/2 + spr.bounds.size.x/2 && distanceY >= otherSizeY/2)
+            if (rigid.velocity.y <= 0.005)
             {
-                if (rigid.velocity.y <= 0)
-                {
-                    isJumping = false;
-                }
+                isJumping = false;
             }
         }
+
     }
-
-
 
     // =====================[외부 스크립트에서 참조용 함수]
 
@@ -107,6 +93,21 @@ public class PlayerState : MonoBehaviour {
     public bool GetIsJumping()
     {
         return isJumping;
+    }
+
+    public float GetSizeX()
+    {
+        return spr.bounds.size.x;
+    }
+
+    public float GetSizeY()
+    {
+        return spr.bounds.size.y;
+    }
+
+    public float GetVerticalSpeed()
+    {
+        return rigid.velocity.y;
     }
 
     public float GetHorizonSpeed()
@@ -137,7 +138,7 @@ public class PlayerState : MonoBehaviour {
         else if (Input.GetKey(KeyCode.S)) vertical = -1.0f;
         else vertical = 0;
 
-        this.transform.position += horizon * horizonSpeed * Vector3.right;
+        transform.Translate(Vector3.right * horizonSpeed * horizon * Time.deltaTime);
 
         if (horizon > 0) isFacedR = true;
         else if (horizon < 0) isFacedR = false;
@@ -155,7 +156,6 @@ public class PlayerState : MonoBehaviour {
         // 키보드용
         if (Input.GetKey(KeyCode.J))
         {
-            Debug.Log("쩜프!");
             rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
         }
 		
@@ -207,8 +207,49 @@ public class PlayerState : MonoBehaviour {
 
     private void Interact()
     {
-        
+
+        if (curObj != null)
+        {
+            if (curObjAct == null) curObjAct = curObj.GetComponent<ObjectProperty>();
+            if (curObjAct.GetInterctingState() == false)
+            {
+                curObjAct.StopInteracting();
+                curObj = null;
+                curObjAct = null;
+            }
+            else
+            {
+                curObjAct.IsInteracting();
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.K)) {
+            if (curObj != null)
+            {
+                curObjAct.StopInteracting();
+                curObj = null;
+                curObjAct = null;
+            }
+            else
+            {
+                if (adjacentObj == null) return;
+                curObj = adjacentObj;
+                curObjAct = curObj.GetComponent<ObjectProperty>();
+                curObjAct.DoInteracting();
+            }
+        }
     }
+
+    private void InitializedSetting()
+    {
+        horizonSpeed = 2.00f;
+        jumpPower = 5.0f;
+        horizon = 0;
+        vertical = 0;
+        isFacedR = true;
+
+        considerObjectVector = Vector3.zero;
+        considerObjectRange = 0.0f;
+}
 
     private void InitializeBitSwitch()
     {
@@ -218,6 +259,7 @@ public class PlayerState : MonoBehaviour {
         isJumping = true;
         isInteracting = false;
         canInteract = true;
+        onGravity = true;
     }
 
     private void InitializeComponent()

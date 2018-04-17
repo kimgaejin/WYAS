@@ -3,13 +3,26 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class ObjectProperty : MonoBehaviour {
+    
+    // reference
+    protected Transform player;
+    protected PlayerState pState;
 
-    private Vector2 size;
+    protected Vector2 size;
     protected float rangeX = 0;
+    protected bool interactingState = false;
 
     protected void Awake()
     {
+        interactingState = false;
         size = this.GetComponent<SpriteRenderer>().bounds.size;
+        player = GameObject.Find("Player").transform;
+        pState = GameObject.Find("Player").GetComponent<PlayerState>();
+    }
+
+    protected void BackToParentObject()
+    {
+        transform.parent = GameObject.Find("Map").transform.FindChild("Objects");
     }
 
     public Vector2 GetSize()
@@ -20,6 +33,11 @@ public class ObjectProperty : MonoBehaviour {
     public float GetRangeX()
     {
         return rangeX;
+    }
+
+    public bool GetInterctingState()
+    {
+        return interactingState;
     }
 
     public virtual void DoInteracting()
