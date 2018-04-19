@@ -21,9 +21,6 @@ public class PlayerState : MonoBehaviour {
     private float vertical;
     private bool isFacedR;
 
-    private Vector3 considerObjectVector;
-    private float considerObjectRange;
-
     // save
     private Vector3 fixedPoint = Vector3.zero;
 
@@ -34,8 +31,6 @@ public class PlayerState : MonoBehaviour {
     private bool canJump;
     private bool isInteracting;
     private bool canInteract;
-    private bool onGravity;
-
 
     private void Awake()
     {
@@ -246,10 +241,7 @@ public class PlayerState : MonoBehaviour {
         horizon = 0;
         vertical = 0;
         isFacedR = true;
-
-        considerObjectVector = Vector3.zero;
-        considerObjectRange = 0.0f;
-}
+    }
 
     private void InitializeBitSwitch()
     {
@@ -259,7 +251,6 @@ public class PlayerState : MonoBehaviour {
         isJumping = true;
         isInteracting = false;
         canInteract = true;
-        onGravity = true;
     }
 
     private void InitializeComponent()
