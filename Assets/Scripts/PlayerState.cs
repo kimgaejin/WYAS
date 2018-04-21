@@ -58,7 +58,7 @@ public class PlayerState : MonoBehaviour {
         distanceX = Mathf.Abs(distanceX);
         if (distanceX < otherSizeX/2 + spr.bounds.size.x/2 && distanceY >= otherSizeY/2)
         {
-            if (rigid.velocity.y <= 0.005)
+            if (rigid.velocity.y <= 0.005f)
             {
                 isJumping = false;
             }
@@ -159,7 +159,11 @@ public class PlayerState : MonoBehaviour {
 
     private void CheckColliders()
     {
-        Collider2D[] colls = Physics2D.OverlapBoxAll(transform.position, new Vector2(2.0f, 2.0f), 0.0f, 1 << 11, 0);
+        int layerMask = (1 << LayerMask.NameToLayer("OBJECT_1ST"))
+                        | (1 << LayerMask.NameToLayer("OBJECT_2ST"))
+                        | (1 << LayerMask.NameToLayer("OBJECT_3ST"))
+                        | (1 << LayerMask.NameToLayer("OBJECT_4ST"));
+        Collider2D[] colls = Physics2D.OverlapBoxAll(transform.position, new Vector2(2.0f, 2.0f), 0.0f, (1 << 15), 0);
         adjacentObj = null;
         foreach (Collider2D col in colls)
         {
@@ -167,7 +171,7 @@ public class PlayerState : MonoBehaviour {
             objState = col.GetComponent<ObjectProperty>();
 
             Vector3 colPoint = col.transform.position;
-
+            Debug.Log(colPoint);
             // 혹시 플레이어 + 오브젝트 높이 보다 차이나는지 확인
             if (Mathf.Abs(transform.position.y - colPoint.y) < spr.bounds.size.y/2 + objState.GetSize().y/2)
             {

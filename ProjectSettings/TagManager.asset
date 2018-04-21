@@ -18,17 +18,17 @@ TagManager:
   - 
   - 
   - 
-  - PLAYER
-  - OBJECT
+  - 
+  - 
+  - 
   - GROUND
+  - PLAYER
+  - OBJECT_1ST
+  - OBJECT_2ST
+  - OBJECT_3ST
+  - OBJECT_4ST
+  - 
   - BACKGROUND
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
   - 
   - 
   - 

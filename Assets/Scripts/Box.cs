@@ -43,7 +43,7 @@ public class Box : ObjectProperty {
         pState.makeMove(true);
 
         player = GameObject.Find("Player").GetComponent<Transform>();
-        distant = new Vector3(base.size.x / 2.0f + player.FindChild("pGraphic").GetComponent<SpriteRenderer>().bounds.size.x / 2.0f, 0, 0);
+        distant = new Vector3(base.size.x / 2.0f + pState.GetSizeX() / 2.0f, 0, 0);
         heightDifference = new Vector3(0, pState.GetSizeY() / 2.0f - GetSize().y / 2.0f, 0);
 
         if (player.position.x >= transform.position.x)
@@ -65,19 +65,26 @@ public class Box : ObjectProperty {
             Debug.Log("Player y Spped < 0 -> stop : " + pState.GetVerticalSpeed());
             StopInteracting();
         }
-        else if (rigid.velocity.y < -1f)
+        else if (rigid.velocity.y < -0.1f)
         {
             Debug.Log("Box y Spped < 0 -> stop");
             StopInteracting();
         }
         else
         {
-            if (Input.GetKey(KeyCode.D))
-                rigid.transform.Translate(Vector2.right * horizonSpeedSave * decelration * Time.deltaTime);
+            if (Mathf.Abs(player.transform.position.x - transform.position.x) 
+                > (GetSize().x / 2 + pState.GetSizeX() / 2 ) * distantErrorValue)
+            {
+                if (Input.GetKey(KeyCode.D))
+                    rigid.transform.Translate(Vector2.right * horizonSpeedSave * decelration * Time.deltaTime);
 
-            if (Input.GetKey(KeyCode.A))
-                rigid.transform.Translate(Vector2.left * horizonSpeedSave * decelration * Time.deltaTime);
-
+                if (Input.GetKey(KeyCode.A))
+                    rigid.transform.Translate(Vector2.left * horizonSpeedSave * decelration * Time.deltaTime);
+            }
+            else
+            {
+                transform.position += -distant * (1-distantErrorValue)/2;
+            }
         }
     }
 
