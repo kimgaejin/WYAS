@@ -16,10 +16,8 @@ public class Box : ObjectProperty {
     private Vector3 fixedPoint;
     private Vector3 collPosition;
 
-    new private void Awake()
+    private void Start()
     {
-        Debug.Log("Awake!");
-        base.Awake();
         base.rangeX = 1.1f;
         fixedPoint = Vector3.zero;
 

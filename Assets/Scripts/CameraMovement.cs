@@ -77,7 +77,10 @@ public class CameraMovement : MonoBehaviour {
 
         if (Inc_crossX != 0)
         {
-            cameraInitialVelocity = intervalPosX * 2 ;
+            acc = acc + new Vector3(-acc.x, 0, 0);
+            vel = vel + new Vector3(-vel.x, 0, 0);
+
+            cameraInitialVelocity = Mathf.Abs(transform.position.x-intervalPosX*crossX) * 2 ;
             if (Inc_crossX == 1)
             {
                // acc = new Vector3(-cameraInitialVelocity * Time.deltaTime, 0, 0);
@@ -95,6 +98,9 @@ public class CameraMovement : MonoBehaviour {
         }
         if (Inc_crossY != 0)
         {
+            acc = acc + new Vector3(0, -acc.y, 0);
+            vel = vel + new Vector3( 0, -vel.y, 0);
+
             cameraInitialVelocity = intervalPosY * 2;
             if (Inc_crossY == 1)
             {
@@ -107,6 +113,8 @@ public class CameraMovement : MonoBehaviour {
                 vel = Vector3.down * cameraInitialVelocity ;
             }
         }
+
+        Debug.Log("acc:" + acc + " /vel:" + vel);
 
         //acc *= Time.deltaTime;
     }

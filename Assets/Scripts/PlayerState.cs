@@ -170,7 +170,7 @@ public class PlayerState : MonoBehaviour {
                         | (1 << LayerMask.NameToLayer("OBJECT_2ST"))
                         | (1 << LayerMask.NameToLayer("OBJECT_3ST"))
                         | (1 << LayerMask.NameToLayer("OBJECT_4ST"));
-        Collider2D[] colls = Physics2D.OverlapBoxAll(transform.position, new Vector2(2.0f, 2.0f), 0.0f, layerMask, 0);
+        Collider2D[] colls = Physics2D.OverlapBoxAll(transform.position, new Vector2(2.0f, 10.0f), 0.0f, layerMask, 0);
         adjacentObj = null;
         foreach (Collider2D col in colls)
         {
