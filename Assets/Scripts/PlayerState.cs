@@ -90,6 +90,11 @@ public class PlayerState : MonoBehaviour {
         return isJumping;
     }
 
+    public bool GetIsFacedR()
+    {
+        return isFacedR;
+    }
+
     public float GetSizeX()
     {
         return spr.bounds.size.x;
@@ -109,6 +114,8 @@ public class PlayerState : MonoBehaviour {
     {
         return horizonSpeed;
     }
+
+
 
     // =====================[이 스크립트에서 참조용 함수]
 
@@ -163,7 +170,7 @@ public class PlayerState : MonoBehaviour {
                         | (1 << LayerMask.NameToLayer("OBJECT_2ST"))
                         | (1 << LayerMask.NameToLayer("OBJECT_3ST"))
                         | (1 << LayerMask.NameToLayer("OBJECT_4ST"));
-        Collider2D[] colls = Physics2D.OverlapBoxAll(transform.position, new Vector2(2.0f, 2.0f), 0.0f, (1 << 15), 0);
+        Collider2D[] colls = Physics2D.OverlapBoxAll(transform.position, new Vector2(2.0f, 2.0f), 0.0f, layerMask, 0);
         adjacentObj = null;
         foreach (Collider2D col in colls)
         {
@@ -171,7 +178,7 @@ public class PlayerState : MonoBehaviour {
             objState = col.GetComponent<ObjectProperty>();
 
             Vector3 colPoint = col.transform.position;
-            Debug.Log(colPoint);
+
             // 혹시 플레이어 + 오브젝트 높이 보다 차이나는지 확인
             if (Mathf.Abs(transform.position.y - colPoint.y) < spr.bounds.size.y/2 + objState.GetSize().y/2)
             {

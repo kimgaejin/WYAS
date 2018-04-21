@@ -16,15 +16,6 @@ public class Box : ObjectProperty {
     private Vector3 fixedPoint;
     private Vector3 collPosition;
 
-    private bool isColl = false;
-
-    private int ONLY_RIGHT_COLLIDER = 1;
-    private int NO_COLLIDER = 0;
-    private int ONLY_LEFT_COLLIDER = -1;
-    private int ALL_SIDE_COLLIDER = 2;
-
-    private List<GameObject> items= new List<GameObject>();
-   
     new private void Awake()
     {
         Debug.Log("Awake!");
@@ -72,7 +63,8 @@ public class Box : ObjectProperty {
         }
         else
         {
-            if (Mathf.Abs(player.transform.position.x - transform.position.x) 
+            float distantX = transform.position.x - player.transform.position.x;
+            if (Mathf.Abs(distantX) 
                 > (GetSize().x / 2 + pState.GetSizeX() / 2 ) * distantErrorValue)
             {
                 if (Input.GetKey(KeyCode.D))
@@ -83,7 +75,14 @@ public class Box : ObjectProperty {
             }
             else
             {
-                transform.position += -distant * (1-distantErrorValue)/2;
+                if (distantX > 0)
+                {
+                    transform.position += -distant * (1 - distantErrorValue) / 2;
+                }
+                else
+                {
+                    transform.position += distant * (1 - distantErrorValue) / 2;
+                }
             }
         }
     }
@@ -93,8 +92,6 @@ public class Box : ObjectProperty {
         pState.makeJump(true);
         pState.makeMove(true);
         pState.makeHorizonspeed(horizonSpeedSave);
-        //transform.parent = null;
         interactingState = false;
-        //BackToParentObject();
     }
 } 

@@ -20,11 +20,6 @@ public class ObjectProperty : MonoBehaviour {
         pState = GameObject.Find("Player").GetComponent<PlayerState>();
     }
 
-    protected void BackToParentObject()
-    {
-        transform.parent = GameObject.Find("Map").transform.FindChild("Objects");
-    }
-
     public Vector2 GetSize()
     {
         return size;
