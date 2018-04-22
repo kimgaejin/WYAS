@@ -17,6 +17,7 @@ public class Rock : ObjectProperty
     private void Start()
     {
         base.rangeX = 1.1f;
+        base.mustFaced = false;
         rigid = GetComponent<Rigidbody2D>();
     }
 

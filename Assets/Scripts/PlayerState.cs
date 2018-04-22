@@ -42,10 +42,12 @@ public class PlayerState : MonoBehaviour {
     
     private void Update()
     {
+        Debug.Log("ISJUPING" + isJumping);
         Move();
         Jump();
         CheckColliders();
         Interact();
+        InteractWithJumping();
     }
 
     private void OnTriggerStay2D(Collider2D other)
@@ -58,7 +60,7 @@ public class PlayerState : MonoBehaviour {
         distanceX = Mathf.Abs(distanceX);
         if (distanceX < otherSizeX/2 + spr.bounds.size.x/2 && distanceY >= otherSizeY/2)
         {
-            if (rigid.velocity.y <= 0.005f)
+            if (rigid.velocity.y <= 0.05f)
             {
                 isJumping = false;
             }
@@ -83,6 +85,11 @@ public class PlayerState : MonoBehaviour {
     public void makeHorizonspeed(float in_horizonSpeed = 0.05f)
     {
         horizonSpeed = in_horizonSpeed;
+    }
+
+    public void makeResetSpeed()
+    {
+        rigid.velocity = Vector2.zero;
     }
 
     public bool GetIsJumping()
@@ -114,8 +121,6 @@ public class PlayerState : MonoBehaviour {
     {
         return horizonSpeed;
     }
-
-
 
     // =====================[이 스크립트에서 참조용 함수]
 
@@ -159,17 +164,15 @@ public class PlayerState : MonoBehaviour {
         if (Input.GetKey(KeyCode.J))
         {
             rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+            isJumping = true;
         }
-		
-		isJumping = true;
     }
 
     private void CheckColliders()
     {
         int layerMask = (1 << LayerMask.NameToLayer("OBJECT_1ST"))
                         | (1 << LayerMask.NameToLayer("OBJECT_2ST"))
-                        | (1 << LayerMask.NameToLayer("OBJECT_3ST"))
-                        | (1 << LayerMask.NameToLayer("OBJECT_4ST"));
+                        | (1 << LayerMask.NameToLayer("OBJECT_4ST")); // OBJECT_3ST인 밧줄, 사다리는 점프할때만 interact하므로 제외.
         Collider2D[] colls = Physics2D.OverlapBoxAll(transform.position, new Vector2(2.0f, 10.0f), 0.0f, layerMask, 0);
         adjacentObj = null;
         foreach (Collider2D col in colls)
@@ -179,41 +182,30 @@ public class PlayerState : MonoBehaviour {
 
             Vector3 colPoint = col.transform.position;
 
-            // 혹시 플레이어 + 오브젝트 높이 보다 차이나는지 확인
-            if (Mathf.Abs(transform.position.y - colPoint.y) < spr.bounds.size.y/2 + objState.GetSize().y/2)
+            if (objState.GetIsInRange() == true)
             {
-                // distanceX가 양수면 플레이어가 오른쪽에 있음.
-                float distanceX = transform.position.x - colPoint.x;
-                // 거리가 그 오브젝트의 충돌범위에 들어와있는지 확인.
-                if (Mathf.Abs(distanceX) <= objState.GetRangeX()) {
-                    // 보고있는 방향에 있는 오브젝트인지 확인.
-                    if ( (distanceX >= 0 && isFacedR == false)
-                        || (distanceX < 0 && isFacedR == true))
+                if (adjacentObj != null)
+                {
+                    // 거리가 더 가까운지 확인.
+                    if (Mathf.Abs(transform.position.x - adjacentObj.transform.position.x)
+                        < Mathf.Abs(transform.position.x - col.transform.position.x))
                     {
-                        // 이미 인접한 오브젝트가 설정되어있는지 확인..
-                        if (adjacentObj != null)
-                        {
-                            // 거리가 더 가까운지 확인.
-                            if (Mathf.Abs(transform.position.x - adjacentObj.transform.position.x)
-                                < Mathf.Abs(transform.position.x - col.transform.position.x))
-                            {
-                                adjacentObj = col;
-                            }
-                        }
-                        // 인접한 오브젝트가 없었다면 얘가 인접한 오브젝트.
-                        else
-                        {
-                            adjacentObj = col;
-                        }
+                        adjacentObj = col;
                     }
                 }
+                // 인접한 오브젝트가 없었다면 얘가 인접한 오브젝트.
+                else
+                {
+                    adjacentObj = col;
+                }
             }
+
         }
     }
 
     private void Interact()
     {
-
+        // 이미 curObj가 연결되어있는 경우, 상호작용 실행
         if (curObj != null)
         {
             if (curObjAct == null) curObjAct = curObj.GetComponent<ObjectProperty>();
@@ -228,7 +220,10 @@ public class PlayerState : MonoBehaviour {
                 curObjAct.IsInteracting();
             }
         }
+
+        // 상호작용 키를 눌렀을 때
         if (Input.GetKeyDown(KeyCode.K)) {
+            // curObj가 연결되어있다면, 상호작용 실행, 아니라면 curObj로 설정.
             if (curObj != null)
             {
                 curObjAct.StopInteracting();
@@ -241,6 +236,53 @@ public class PlayerState : MonoBehaviour {
                 curObj = adjacentObj;
                 curObjAct = curObj.GetComponent<ObjectProperty>();
                 curObjAct.DoInteracting();
+            }
+        }
+    }
+
+    private void InteractWithJumping()
+    {
+        /* CheckColliders() + Interact() 의 기능을 하고있지만
+         * 사다리와 밧줄같은, 점프해야만 상호작용 할 수 있는 물체들(Layer:OBJECT_3ST)에게 적용 됨.
+         * 점프중이며, 범위내에 있는 밧줄 혹은 사다리에게 바로 실행 됨.
+         * 뭔가의 가속도가 있는데?
+         */
+
+        if (curObj == null)
+        {
+            if (isJumping == true)
+            {
+                int layerMask = (1 << LayerMask.NameToLayer("OBJECT_3ST")); // 밧줄과 사다리
+                Collider2D[] colls = Physics2D.OverlapBoxAll(transform.position, new Vector2(1.0f, 20.0f), 0.0f, layerMask, 0);
+               
+                Collider2D adjacentCol = null;
+                foreach (Collider2D col in colls)
+                {
+                    ObjectProperty colState = col.GetComponent<ObjectProperty>();
+                    if (colState.GetIsInRange() == true)
+                    {
+                        if (adjacentCol != null)
+                        {
+                            if (Mathf.Abs(transform.position.x - adjacentCol.transform.position.x)
+                                < Mathf.Abs(transform.position.x - col.transform.position.x))
+                            {
+                                adjacentCol = col;
+                            }
+                        }
+                        else
+                        {
+                            adjacentCol = col;
+                        }
+                    }
+                }
+
+                if (adjacentCol != null)
+                {
+                    curObj = adjacentCol;
+                    curObjAct = adjacentCol.GetComponent<ObjectProperty>();
+                    curObjAct.DoInteracting();
+                }
+
             }
         }
     }

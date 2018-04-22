@@ -44,3 +44,42 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: BG3ST
+    uniqueID: 1125352687
+    locked: 0
+  - name: BG2ST
+    uniqueID: 1687118013
+    locked: 0
+  - name: BG1ST
+    uniqueID: 2641465319
+    locked: 0
+  - name: New Layer
+    uniqueID: 1423741019
+    locked: 0
+  - name: GROUND2
+    uniqueID: 704063029
+    locked: 0
+  - name: GROUND1
+    uniqueID: 755279515
+    locked: 0
+  - name: New Layer
+    uniqueID: 3135272245
+    locked: 0
+  - name: New Layer
+    uniqueID: 2476421119
+    locked: 0
+  - name: OBJECT_4ST
+    uniqueID: 3351952115
+    locked: 0
+  - name: OBJECT_3ST
+    uniqueID: 2254770123
+    locked: 0
+  - name: OBJECT_2ST
+    uniqueID: 2386009217
+    locked: 0
+  - name: OBJECT_1ST
+    uniqueID: 2334999469
+    locked: 0
+  - name: PLAYER
+    uniqueID: 4276112281
+    locked: 0

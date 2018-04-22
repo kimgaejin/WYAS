@@ -8,8 +8,9 @@ public class ObjectProperty : MonoBehaviour {
     protected Transform player;
     protected PlayerState pState;
 
-    protected Vector2 size;
+    private Vector2 size;
     protected float rangeX = 0;
+    protected bool mustFaced = false;
     protected bool interactingState = false;
 
     protected void Awake()
@@ -20,6 +21,30 @@ public class ObjectProperty : MonoBehaviour {
         pState = GameObject.Find("Player").GetComponent<PlayerState>();
     }
 
+    // 범위 안인가
+    
+    public bool GetIsInRange()
+    {
+        Vector3 distance = player.position - transform.position;
+
+        if (mustFaced == true)
+        {
+            if (   (distance.x < 0 && pState.GetIsFacedR() == false)
+                || (distance.x >= 0 && pState.GetIsFacedR() == true)  )
+            {
+                return false;
+            }
+        }
+        if (Mathf.Abs(distance.y) < pState.GetSizeY() / 2 + GetSize().y / 2)
+        {
+            if (Mathf.Abs(distance.x) <= GetRangeX())
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public Vector2 GetSize()
     {
         return size;

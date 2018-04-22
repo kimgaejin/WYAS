@@ -13,13 +13,12 @@ public class Box : ObjectProperty {
 
     private Vector3 distant;
     private Vector3 heightDifference;
-    private Vector3 fixedPoint;
     private Vector3 collPosition;
 
     private void Start()
     {
         base.rangeX = 1.1f;
-        fixedPoint = Vector3.zero;
+        base.mustFaced = true;
 
         decelration = 0.5f;
         distantErrorValue = 1.075f;
@@ -32,7 +31,7 @@ public class Box : ObjectProperty {
         pState.makeMove(true);
 
         player = GameObject.Find("Player").GetComponent<Transform>();
-        distant = new Vector3(base.size.x / 2.0f + pState.GetSizeX() / 2.0f, 0, 0);
+        distant = new Vector3(base.GetSize().x / 2.0f + pState.GetSizeX() / 2.0f, 0, 0);
         heightDifference = new Vector3(0, pState.GetSizeY() / 2.0f - GetSize().y / 2.0f, 0);
 
         if (player.position.x >= transform.position.x)
