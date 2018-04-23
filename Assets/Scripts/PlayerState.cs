@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerState : MonoBehaviour {
 
+    public float limitVel = 10.0f;
+
     // references of objects and scripts and components
     private GameObject keypadCanvas;
     private Joystick joystick;
@@ -42,12 +44,12 @@ public class PlayerState : MonoBehaviour {
     
     private void Update()
     {
-        Debug.Log("ISJUPING" + isJumping);
         Move();
         Jump();
         CheckColliders();
         Interact();
         InteractWithJumping();
+        LimitVelocityY();
     }
 
     private void OnTriggerStay2D(Collider2D other)
@@ -80,6 +82,11 @@ public class PlayerState : MonoBehaviour {
     {
         if (flag == true) canJump = true;
         else canJump = false;
+    }
+
+    public void makeIsJumping(bool flag)
+    {
+        isJumping = flag;
     }
 
     public void makeHorizonspeed(float in_horizonSpeed = 0.05f)
@@ -245,7 +252,6 @@ public class PlayerState : MonoBehaviour {
         /* CheckColliders() + Interact() 의 기능을 하고있지만
          * 사다리와 밧줄같은, 점프해야만 상호작용 할 수 있는 물체들(Layer:OBJECT_3ST)에게 적용 됨.
          * 점프중이며, 범위내에 있는 밧줄 혹은 사다리에게 바로 실행 됨.
-         * 뭔가의 가속도가 있는데?
          */
 
         if (curObj == null)
@@ -284,6 +290,16 @@ public class PlayerState : MonoBehaviour {
                 }
 
             }
+        }
+    }
+
+    private void LimitVelocityY()
+    {
+        Debug.Log("velocity:" + rigid.velocity);
+        if (Mathf.Abs(rigid.velocity.y) > limitVel)
+        {
+            //rigid.velocity -= new Vector2(0, rigid.velocity.y/Mathf.Abs(rigid.velocity.y) * 10.0f);
+            rigid.AddForce(-Physics2D.gravity, ForceMode2D.Force);
         }
     }
 

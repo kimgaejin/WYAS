@@ -10,6 +10,8 @@ public class Ladder : ObjectProperty {
     private float maxY;
     private float minY;
 
+    WaitForSeconds wait005 = new WaitForSeconds(0.05f);
+
     private void Start()
     {
         base.rangeX = 0.3f;
@@ -28,11 +30,13 @@ public class Ladder : ObjectProperty {
         interactingState = true;
 
         pState.makeResetSpeed();
+        pState.makeIsJumping(false);
         StartCoroutine("MoveToLadder");
     }
 
     override public void IsInteracting()
     {
+        
         if (player.position.y > maxY || player.position.y < minY)
         {
             StopInteracting();
@@ -61,8 +65,6 @@ public class Ladder : ObjectProperty {
 
     IEnumerator MoveToLadder()
     {
-        WaitForSeconds wait005 = new WaitForSeconds(0.05f);
-
         Vector3 dis = transform.position - player.transform.position;
         Vector3 speed = new Vector3(dis.x, 0, 0) * (1.0f/20);
         while (true)
@@ -81,7 +83,12 @@ public class Ladder : ObjectProperty {
         while (true)
         {
             rangeX = 0;
-            yield return new WaitForSeconds(1.0f);
+
+            for (int i = 0; i < 20; i++)
+            {
+                if (pState.GetIsJumping() == false) break;
+                yield return wait005;
+            }
             rangeX = 0.3f;
             break;
         }
