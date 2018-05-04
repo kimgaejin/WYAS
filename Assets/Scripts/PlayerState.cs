@@ -295,10 +295,8 @@ public class PlayerState : MonoBehaviour {
 
     private void LimitVelocityY()
     {
-        Debug.Log("velocity:" + rigid.velocity);
         if (Mathf.Abs(rigid.velocity.y) > limitVel)
         {
-            //rigid.velocity -= new Vector2(0, rigid.velocity.y/Mathf.Abs(rigid.velocity.y) * 10.0f);
             rigid.AddForce(-Physics2D.gravity, ForceMode2D.Force);
         }
     }

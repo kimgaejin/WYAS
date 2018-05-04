@@ -9,21 +9,26 @@ public class Ladder : ObjectProperty {
     private float ladderSpeed = 1.0f;
     private float maxY;
     private float minY;
+    private bool canUse;
 
     WaitForSeconds wait005 = new WaitForSeconds(0.05f);
 
     private void Start()
     {
         base.rangeX = 0.3f;
-        base.mustFaced = false;
+        base.mustFaced = true;
         pRigid = GameObject.Find("Player").GetComponent<Rigidbody2D>();
 
+        canUse = true;
         maxY = transform.position.y + GetSize().y/2 + pState.GetSizeY()/2;
         minY = transform.position.y - GetSize().y / 2;
     }
 
     override public void DoInteracting()
     {
+        if (canUse == false) return;
+
+        canUse = false;
         pState.makeMove(false);
         pState.makeJump(false);
         pRigid.isKinematic = true;
@@ -55,12 +60,15 @@ public class Ladder : ObjectProperty {
 
     override public void StopInteracting()
     {
+        canUse = true;
         pState.makeMove(true);
         pState.makeJump(true);
         pRigid.isKinematic = false;
         interactingState = false;
+        
         StopCoroutine("MoveToLadder");
-        StartCoroutine("CoolTime");
+        player.transform.Translate(new Vector3(transform.position.x - player.transform.position.x,0,0));
+        // StartCoroutine("CoolTime");
     }
 
     IEnumerator MoveToLadder()
@@ -77,20 +85,5 @@ public class Ladder : ObjectProperty {
             break;
         }
     }
-
-    IEnumerator CoolTime()
-    {
-        while (true)
-        {
-            rangeX = 0;
-
-            for (int i = 0; i < 20; i++)
-            {
-                if (pState.GetIsJumping() == false) break;
-                yield return wait005;
-            }
-            rangeX = 0.3f;
-            break;
-        }
-    }
+    
 }

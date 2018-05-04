@@ -29,7 +29,7 @@ public class ObjectProperty : MonoBehaviour {
 
         if (mustFaced == true)
         {
-            if (   (distance.x < 0 && pState.GetIsFacedR() == false)
+            if (   (distance.x <= 0 && pState.GetIsFacedR() == false)
                 || (distance.x >= 0 && pState.GetIsFacedR() == true)  )
             {
                 return false;
