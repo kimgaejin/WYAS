@@ -46,7 +46,7 @@ public class ObjectManager : MonoBehaviour {
 
     private void InitializeList()
     {
-        objs = GameObject.Find("Map").transform.FindChild("Objects");
+        objs = GameObject.Find("Map").transform.Find("Objects");
 
         foreach (Transform t in objs) {
             objList.Add(t);

@@ -323,7 +323,7 @@ public class PlayerState : MonoBehaviour {
     private void InitializeComponent()
     {
         rigid = this.gameObject.GetComponent<Rigidbody2D>();
-        spr = this.transform.FindChild("pGraphic").GetComponent<SpriteRenderer>();
+        spr = this.transform.Find("pGraphic").GetComponent<SpriteRenderer>();
         curObj = null;
         isFacedR = true;
     }
@@ -339,7 +339,7 @@ public class PlayerState : MonoBehaviour {
         keypadCanvas = GameObject.Find("KeypadCanvas");
         if (keypadCanvas == null) Debug.Log("error: can't not find keypadCanvas at player");
 
-        joystick = keypadCanvas.transform.FindChild("Joystick").GetComponent<Joystick>();
+        joystick = keypadCanvas.transform.Find("Joystick").GetComponent<Joystick>();
         if (joystick == null) Debug.Log("error: can't not find joystick at player");
     }
     
