@@ -32,12 +32,16 @@ public class Box : ObjectProperty {
 
         player = GameObject.Find("Player").GetComponent<Transform>();
         distant = new Vector3(base.GetSize().x / 2.0f + pState.GetSizeX() / 2.0f, 0, 0);
-        heightDifference = new Vector3(0, pState.GetSizeY() / 2.0f - GetSize().y / 2.0f, 0);
+
+        if (pState.GetIsReversed() == false) heightDifference = new Vector3(0, pState.GetSizeY() / 2.0f - GetSize().y / 2.0f, 0);
+        else heightDifference = new Vector3(0, -(pState.GetSizeY() / 2.0f - GetSize().y) / 2.0f, 0);
 
         if (player.position.x >= transform.position.x)
             player.position = transform.position + distant * distantErrorValue + heightDifference;
         else
             player.position = transform.position - distant * distantErrorValue + heightDifference;
+
+        Debug.Log("pPos:" + player.position + "  dist:" + distant + " heightDist:" + heightDifference);
 
         interactingState = true;
 

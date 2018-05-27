@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerState : MonoBehaviour {
 
-    public float limitVel = 10.0f;
+    public float limitVel = 9.8f;
 
     // references of objects and scripts and components
     private GameObject keypadCanvas;
@@ -22,6 +22,7 @@ public class PlayerState : MonoBehaviour {
     private float horizon;
     private float vertical;
     private bool isFacedR;
+    private bool isReversed;
 
     // save
     private Vector3 fixedPoint = Vector3.zero;
@@ -60,9 +61,10 @@ public class PlayerState : MonoBehaviour {
         float distanceY = this.transform.position.y - other.transform.position.y;
 
         distanceX = Mathf.Abs(distanceX);
-        if (distanceX < otherSizeX/2 + spr.bounds.size.x/2 && distanceY >= otherSizeY/2)
+        if ((isReversed == false && (distanceX < otherSizeX/2 + spr.bounds.size.x/2 && distanceY >= otherSizeY/2))
+            || (isReversed == true  && (distanceX < otherSizeX / 2 + spr.bounds.size.x / 2 && distanceY <= otherSizeY / 2))    )
         {
-            if (rigid.velocity.y <= 0.05f)
+            if (Mathf.Abs(rigid.velocity.y)<= 0.05f)
             {
                 isJumping = false;
             }
@@ -129,6 +131,16 @@ public class PlayerState : MonoBehaviour {
         return horizonSpeed;
     }
 
+    public bool GetIsReversed()
+    {
+        return isReversed;
+    }
+
+    public void MakeIsReversed(bool type)
+    {
+        isReversed = type;
+    }
+
     // =====================[이 스크립트에서 참조용 함수]
 
     private void Move()
@@ -168,9 +180,17 @@ public class PlayerState : MonoBehaviour {
         //bool isTouchingJump = false;
         //if (GetStateJumpImg() == true)    // 터치패널용
         // 키보드용
+
+        //Debug.Log("isJ:" + isJumping + " rev:" + isReversed);
+
         if (Input.GetKey(KeyCode.J))
         {
-            rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+            Vector2 arrow;
+            if (isReversed == false) arrow= Vector2.up;
+            else arrow = Vector2.down;
+
+            Debug.Log("호잇짜다!!");
+            rigid.AddForce(arrow * jumpPower, ForceMode2D.Impulse);
             isJumping = true;
         }
     }
@@ -308,6 +328,7 @@ public class PlayerState : MonoBehaviour {
         horizon = 0;
         vertical = 0;
         isFacedR = true;
+        isReversed = false;
     }
 
     private void InitializeBitSwitch()

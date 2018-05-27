@@ -39,7 +39,8 @@ public class Rock : ObjectProperty
     {
         heightDifference = new Vector3(0, pState.GetSizeY() / 2.0f + GetSize().y / 2.0f, 0);
 
-        transform.position = player.position + heightDifference;
+        if (pState.GetIsReversed() == false) transform.position = player.position + heightDifference;
+        else transform.position = player.position - heightDifference;
 
         rigid.isKinematic = true;
         bounceCount = 0;
@@ -49,7 +50,8 @@ public class Rock : ObjectProperty
 
     override public void IsInteracting()
     {
-        transform.position = player.position + heightDifference;
+        if (pState.GetIsReversed() == false) transform.position = player.position + heightDifference;
+        else transform.position = player.position - heightDifference;
     }
 
     override public void StopInteracting()
