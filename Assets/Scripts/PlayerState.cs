@@ -317,7 +317,8 @@ public class PlayerState : MonoBehaviour {
     {
         if (Mathf.Abs(rigid.velocity.y) > limitVel)
         {
-            rigid.AddForce(-Physics2D.gravity, ForceMode2D.Force);
+            if (rigid.velocity.y > 0) rigid.AddForce(Physics2D.gravity * 2, ForceMode2D.Force);
+            else rigid.AddForce(-Physics2D.gravity * 2, ForceMode2D.Force);
         }
     }
 

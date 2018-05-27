@@ -29,12 +29,13 @@ public class Box : ObjectProperty {
     {
         pState.makeJump(false);
         pState.makeMove(true);
+        rigid.mass = 1;
 
         player = GameObject.Find("Player").GetComponent<Transform>();
         distant = new Vector3(base.GetSize().x / 2.0f + pState.GetSizeX() / 2.0f, 0, 0);
 
         if (pState.GetIsReversed() == false) heightDifference = new Vector3(0, pState.GetSizeY() / 2.0f - GetSize().y / 2.0f, 0);
-        else heightDifference = new Vector3(0, -(pState.GetSizeY() / 2.0f - GetSize().y) / 2.0f, 0);
+        else heightDifference = new Vector3(0, -(pState.GetSizeY() / 2.0f - GetSize().y / 2.0f), 0);
 
         if (player.position.x >= transform.position.x)
             player.position = transform.position + distant * distantErrorValue + heightDifference;
@@ -94,5 +95,6 @@ public class Box : ObjectProperty {
         pState.makeMove(true);
         pState.makeHorizonspeed(horizonSpeedSave);
         interactingState = false;
+        rigid.mass = 100;
     }
 } 
