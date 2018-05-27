@@ -25,18 +25,6 @@ public class GravitySpace : MonoBehaviour {
         SetArrow();
     }
 
-    private void OnTriggerStay2D(Collider2D col)
-    {
-        Rigidbody2D rigid = null;
-        rigid = col.GetComponent<Rigidbody2D>();
-        if (rigid != null)
-        {
-            float weightGravity = rigid.mass;
-            //Debug.Log("wei" + weightGravity); 
-            //rigid.AddForce(arrow * gravityPower * weightGravity * 2, ForceMode2D.Force);
-        }
-    }
-
     private void OnTriggerEnter2D(Collider2D col)
     {
         float colGrav = col.GetComponent<Rigidbody2D>().gravityScale;
