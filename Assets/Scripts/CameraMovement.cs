@@ -51,20 +51,22 @@ public class CameraMovement : MonoBehaviour {
         {
             acc = acc + new Vector3(-acc.x, 0, 0);
             vel = vel + new Vector3(-vel.x, 0, 0);
-            transform.position = new Vector3(crossX * intervalPosX, transform.position.y, 0) + StandardPosition;
+            //transform.position = new Vector3(crossX * intervalPosX, transform.position.y, 0) + StandardPosition;
             
         }
         else if ((vel.y * (vel.y + acc.y)) < 0)
         {
             acc = acc + new Vector3(0, -acc.y, 0);
             vel = vel + new Vector3(0, -vel.y, 0);
-            transform.position = new Vector3(transform.position.x, crossY * intervalPosY, 0) + StandardPosition;
+           // transform.position = new Vector3(transform.position.x, crossY * intervalPosY, 0) + StandardPosition;
         }
         else
         {
             vel = vel + acc;
             transform.Translate(vel * Time.deltaTime);
         }
+
+        Debug.Log("VEL"+vel);
     }
 
     private void CameraAccelation(int Inc_crossX, int Inc_crossY)

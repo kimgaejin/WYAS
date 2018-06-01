@@ -53,12 +53,12 @@ public class Box : ObjectProperty {
 
     override public void IsInteracting()
     {
-        if (pState.GetVerticalSpeed() < -0.1f)
+        if (Mathf.Abs(pState.GetVerticalSpeed()) > 0.1f)
         {
             Debug.Log("Player y Spped < 0 -> stop : " + pState.GetVerticalSpeed());
             StopInteracting();
         }
-        else if (rigid.velocity.y < -0.1f)
+        else if ( Mathf.Abs(rigid.velocity.y) > 0.1f)
         {
             Debug.Log("Box y Spped < 0 -> stop");
             StopInteracting();

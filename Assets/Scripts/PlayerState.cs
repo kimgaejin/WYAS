@@ -139,6 +139,7 @@ public class PlayerState : MonoBehaviour {
     public void MakeIsReversed(bool type)
     {
         isReversed = type;
+        RotatePlayerGPH(type);
     }
 
     // =====================[이 스크립트에서 참조용 함수]
@@ -321,6 +322,23 @@ public class PlayerState : MonoBehaviour {
             else rigid.AddForce(-Physics2D.gravity * 2, ForceMode2D.Force);
         }
     }
+
+    private void RotatePlayerGPH(bool reverseType)
+    {
+        if (reverseType == true)
+        {
+            //transform.localRotation = Quaternion.Euler(0, 0, 180);
+            // -> 이동도 바뀜
+            spr.flipY = true;
+        }
+        else
+        {
+            //transform.localRotation = Quaternion.Euler(0, 0, 0);
+            spr.flipY = false;
+        }
+    }
+
+    //----------------------------- initializing
 
     private void InitializedSetting()
     {
