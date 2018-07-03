@@ -35,6 +35,15 @@ public class PlayerState : MonoBehaviour {
     private bool isInteracting;
     private bool canInteract;
 
+    // time
+    private float rotateTime = 0.5f;
+
+    // etc
+    WaitForSeconds wait01 = new WaitForSeconds(0.1f);
+    WaitForSeconds wait005 = new WaitForSeconds(0.05f);
+
+    // ==[function]
+
     private void Awake()
     {
         InitializedSetting();
@@ -52,7 +61,7 @@ public class PlayerState : MonoBehaviour {
         InteractWithJumping();
         LimitVelocityY();
     }
-
+    /*
     private void OnTriggerStay2D(Collider2D other)
     {
         float otherSizeX = other.bounds.size.x;
@@ -70,6 +79,26 @@ public class PlayerState : MonoBehaviour {
             }
         }
 
+    }
+    */
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        float otherSizeX = other.collider.bounds.size.x;
+        float otherSizeY = other.collider.bounds.size.y;
+        float distanceX = this.transform.position.x - other.gameObject.transform.position.x;
+        float distanceY = this.transform.position.y - other.transform.position.y;
+
+        bool isWithOthersX = (other.transform.position.x <= this.transform.position.x && this.transform.position.x <= other.transform.position.x + otherSizeX);
+        bool isWithOthersY = (isReversed) ? (this.transform.position.y <= other.transform.position.y) : (other.transform.position.y <= this.transform.position.y);
+
+
+        if (isWithOthersX && isWithOthersY) 
+        {
+            if (Mathf.Abs(rigid.velocity.y) <= 0.05f)
+            {
+                isJumping = false;
+            }
+        }
     }
 
     // =====================[외부 스크립트에서 참조용 함수]
@@ -138,8 +167,8 @@ public class PlayerState : MonoBehaviour {
 
     public void MakeIsReversed(bool type)
     {
-        isReversed = type;
         RotatePlayerGPH(type);
+        isReversed = type;
     }
 
     // =====================[이 스크립트에서 참조용 함수]
@@ -327,14 +356,25 @@ public class PlayerState : MonoBehaviour {
     {
         if (reverseType == true)
         {
-            //transform.localRotation = Quaternion.Euler(0, 0, 180);
-            // -> 이동도 바뀜
-            spr.flipY = true;
+            if (isReversed == false)
+            {
+                //transform.localRotation = Quaternion.Euler(0, 0, 180);
+                // -> 이동도 바뀜
+                Debug.Log("rever1");
+              //  StartCoroutine("RotateAnimation");
+                spr.flipY = true;
+            }
+
         }
         else
         {
-            //transform.localRotation = Quaternion.Euler(0, 0, 0);
-            spr.flipY = false;
+            if (isReversed == true)
+            {
+                Debug.Log("rever2");
+                //transform.localRotation = Quaternion.Euler(0, 0, 0);
+               // StartCoroutine("RotateAnimation");
+                spr.flipY = false;
+            }
         }
     }
 
@@ -382,5 +422,15 @@ public class PlayerState : MonoBehaviour {
         joystick = keypadCanvas.transform.Find("Joystick").GetComponent<Joystick>();
         if (joystick == null) Debug.Log("error: can't not find joystick at player");
     }
-    
+
+    IEnumerator RotateAnimation()
+    {
+        float deg = 180 / (rotateTime * 20);
+        for (int i = 0; i < rotateTime * 20; i++)
+        {
+            transform.Rotate(0,0,deg);
+            yield return wait005;
+        }
+    }
+
 }

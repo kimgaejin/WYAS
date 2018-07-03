@@ -11,6 +11,8 @@ public class GravitySpace : MonoBehaviour {
     Vector2 point1;
     Vector2 point2;
 
+    bool isPlayerInArea;
+
     private void Start()
     {
         player = GameObject.Find("Player").GetComponent<Transform>();
@@ -42,6 +44,7 @@ public class GravitySpace : MonoBehaviour {
         if (col.tag == "PLAYER" && arrow == Vector3.up)
         {
             pState.MakeIsReversed(false);
+            Debug.Log("player:" + player.transform.position);
         }
 
         Debug.Log("exit" + col.transform.position);

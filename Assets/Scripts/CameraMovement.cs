@@ -66,7 +66,6 @@ public class CameraMovement : MonoBehaviour {
             transform.Translate(vel * Time.deltaTime);
         }
 
-        Debug.Log("VEL"+vel);
     }
 
     private void CameraAccelation(int Inc_crossX, int Inc_crossY)
