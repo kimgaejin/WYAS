@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class Ui : MonoBehaviour {
     public GameObject Start_Screen_Canvas;
     public GameObject Dream_Control_Center_Canvas;
     public GameObject Portal_Canvas;
-    public GameObject M_Canvas;
+    public GameObject Progression_Canvas;
 
 
   
@@ -28,6 +29,9 @@ public class Ui : MonoBehaviour {
     public Button Charter4_Button;
 
     public Button Portal_Button;
+    public Button Exit_Portal_Button;
+
+    public Button Progression_Exit_Button;
 
 
     // Use this for initialization
@@ -35,7 +39,6 @@ public class Ui : MonoBehaviour {
         Start_Screen_Canvas.SetActive(true);
         Dream_Control_Center_Canvas.SetActive(false);
         Portal_Canvas.SetActive(false);
-        M_Canvas.SetActive(false);
       //  Set_Up_Canvas.SetActive(false);
     }
 	
@@ -48,7 +51,6 @@ public class Ui : MonoBehaviour {
         Start_Screen_Canvas.SetActive(false);
         Dream_Control_Center_Canvas.SetActive(true);
         Portal_Canvas.SetActive(false);
-        M_Canvas.SetActive(false);
        // Set_Up_Canvas.SetActive(false);
 
     }
@@ -64,7 +66,6 @@ public class Ui : MonoBehaviour {
         Start_Screen_Canvas.SetActive(false);
         Dream_Control_Center_Canvas.SetActive(true);
         Portal_Canvas.SetActive(false);
-        M_Canvas.SetActive(false);
        // Set_Up_Canvas.SetActive(false);
 
         Diary_Panel.SetActive(true);
@@ -127,26 +128,32 @@ public class Ui : MonoBehaviour {
         Start_Screen_Canvas.SetActive(false);
         Dream_Control_Center_Canvas.SetActive(false);
         Portal_Canvas.SetActive(true);
-        M_Canvas.SetActive(false);
         //  Set_Up_Canvas.SetActive(false);
 
 
     }
     public void Exit_Portal()
     {
-
+        Start_Screen_Canvas.SetActive(false);
+        Dream_Control_Center_Canvas.SetActive(true);
+        Portal_Canvas.SetActive(false);
+        // Set_Up_Canvas.SetActive(false);
 
     }
 
     public void Enter()
     {
+        SceneManager.LoadScene("main");
+    }
 
-
+    public void Progreesion()
+    {
+        Progression_Canvas.SetActive(true);
     }
 
     public void Progression_Exit()
     {
-
+        Progression_Canvas.SetActive(false);
 
     }
 }
