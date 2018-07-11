@@ -358,11 +358,12 @@ public class PlayerState : MonoBehaviour {
         {
             if (isReversed == false)
             {
-                //transform.localRotation = Quaternion.Euler(0, 0, 180);
+               // transform.localRotation = Quaternion.Euler(0, 180, 180);
                 // -> 이동도 바뀜
                 Debug.Log("rever1");
-              //  StartCoroutine("RotateAnimation");
-                spr.flipY = true;
+                //  StartCoroutine("RotateAnimation");
+               // spr.flipY = true;
+               // spr.flipX = false;
             }
 
         }
@@ -372,8 +373,9 @@ public class PlayerState : MonoBehaviour {
             {
                 Debug.Log("rever2");
                 //transform.localRotation = Quaternion.Euler(0, 0, 0);
-               // StartCoroutine("RotateAnimation");
-                spr.flipY = false;
+                // StartCoroutine("RotateAnimation");
+                //spr.flipY = false;
+               // spr.flipX = true;
             }
         }
     }
