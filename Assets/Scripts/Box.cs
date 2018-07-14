@@ -57,6 +57,7 @@ public class Box : ObjectProperty {
 
     override public void IsInteracting()
     {
+        /*
         if (Mathf.Abs(pState.GetVerticalSpeed()) > 0.1f)
         {
             Debug.Log("Player y Spped < 0 -> stop : " + pState.GetVerticalSpeed());
@@ -67,17 +68,30 @@ public class Box : ObjectProperty {
             Debug.Log("Box y Spped < 0 -> stop");
             StopInteracting();
         }
+        */
+        float pX = player.transform.position.x;
+        float pY = player.transform.position.y;
+        float bX = transform.position.x;
+        float bY = transform.position.y;
+        bool soFarBox = Mathf.Abs( (pX - bX)*(pX - bX)+(pY - bY)*(pY - bY)) >= 3.0f;
+        if (soFarBox) {
+            Debug.Log("soFarBox");
+            StopInteracting();
+        }
         else
         {
+            Vector2 distance2d = new Vector2(pX - bX, pY - bY);
             float distantX = transform.position.x - player.transform.position.x;
-            if (Mathf.Abs(distantX) 
-                > (GetSize().x / 2 + pState.GetSizeX() / 2 ) * distantErrorValue)
+            if (Mathf.Abs(distantX)
+                > (GetSize().x / 2 + pState.GetSizeX() / 2) * distantErrorValue)
             {
                 if (Input.GetKey(KeyCode.D))
-                    rigid.transform.Translate(Vector2.right * horizonSpeedSave * decelration * Time.deltaTime);
+                    rigid.AddForce(distance2d * 100, ForceMode2D.Force);
+                    //rigid.transform.Translate(Vector2.right * horizonSpeedSave * decelration * Time.deltaTime);
 
                 if (Input.GetKey(KeyCode.A))
-                    rigid.transform.Translate(Vector2.left * horizonSpeedSave * decelration * Time.deltaTime);
+                    rigid.AddForce(distance2d * 100, ForceMode2D.Force);
+                    //rigid.transform.Translate(Vector2.left * horizonSpeedSave * decelration * Time.deltaTime);
             }
             else
             {

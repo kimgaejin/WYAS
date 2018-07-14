@@ -38,6 +38,9 @@ public class PlayerState : MonoBehaviour {
     // time
     private float rotateTime = 0.5f;
 
+    //
+    Quaternion myQuat;
+
     // etc
     WaitForSeconds wait01 = new WaitForSeconds(0.1f);
     WaitForSeconds wait005 = new WaitForSeconds(0.05f);
@@ -54,6 +57,7 @@ public class PlayerState : MonoBehaviour {
     
     private void Update()
     {
+        AdjustBalance();
         Move();
         Jump();
         CheckColliders();
@@ -61,44 +65,98 @@ public class PlayerState : MonoBehaviour {
         InteractWithJumping();
         LimitVelocityY();
     }
-    /*
-    private void OnTriggerStay2D(Collider2D other)
+
+    private void OnCollisionStay2D(Collision2D other)
     {
-        float otherSizeX = other.bounds.size.x;
-        float otherSizeY = other.bounds.size.y;
-        float distanceX = this.transform.position.x - other.transform.position.x;
-        float distanceY = this.transform.position.y - other.transform.position.y;
+        bool isGround = (other.gameObject.tag == "GROUND");
+        bool isBox = (other.gameObject.tag == "BOX");
 
-        distanceX = Mathf.Abs(distanceX);
-        if ((isReversed == false && (distanceX < otherSizeX/2 + spr.bounds.size.x/2 && distanceY >= otherSizeY/2))
-            || (isReversed == true  && (distanceX < otherSizeX / 2 + spr.bounds.size.x / 2 && distanceY <= otherSizeY / 2))    )
+        // 점프 유효성 검사
+        float yErrorValue = .5f;
+
+        if (isGround || isBox)
         {
-            if (Mathf.Abs(rigid.velocity.y)<= 0.05f)
+            SpriteRenderer otherSpr = other.gameObject.GetComponent<SpriteRenderer>();
+            if (otherSpr == null)
             {
-                isJumping = false;
+                Debug.Log("ERROR: Hasn't SpriteRenderer***********************");
+                return;
             }
-        }
 
-    }
-    */
-    private void OnCollisionEnter2D(Collision2D other)
-    {
-        float otherSizeX = other.collider.bounds.size.x;
-        float otherSizeY = other.collider.bounds.size.y;
-        float distanceX = this.transform.position.x - other.gameObject.transform.position.x;
-        float distanceY = this.transform.position.y - other.transform.position.y;
+            float otherSizeX = otherSpr.size.x;
+            float otherSizeY = otherSpr.size.y;
+            
+            // 원점부터 모서리까지의 기본거리.
+            float diagonalLength = Mathf.Sqrt(otherSizeX * otherSizeX + otherSizeY * otherSizeY) / 2.0f ;
+            // 사각형의 모서리까지 기본 각도. 45도
+            float theta = 45.0f * Mathf.PI / 180.0f;
+            // 오브젝트가 가지고있는 rotation.z 값에 따른 각도.
+            float angle = other.gameObject.GetComponent<Transform>().rotation.eulerAngles.z * Mathf.PI / 180.0f;
+            // 기본 각과 오브젝트 각 합산
+            float calcAngle = theta + angle;
+            if (calcAngle >= Mathf.PI / 2.0f) calcAngle %= Mathf.PI / 2.0f;
 
-        bool isWithOthersX = (other.transform.position.x <= this.transform.position.x && this.transform.position.x <= other.transform.position.x + otherSizeX);
-        bool isWithOthersY = (isReversed) ? (this.transform.position.y <= other.transform.position.y) : (other.transform.position.y <= this.transform.position.y);
 
-
-        if (isWithOthersX && isWithOthersY) 
-        {
-            if (Mathf.Abs(rigid.velocity.y) <= 0.05f)
+            bool isOneSidePlatform = true; //= angle <= 22.5f * Mathf.PI / 180.0f || 66.5f * Mathf.PI / 180.0f <= angle;
+            // 올라갈 수 있는 면이 하나. (사각형 꼴)
+            if (isOneSidePlatform)
             {
-                isJumping = false;
+                //Debug.Log("===================================================");
+                // 극좌표계를 직교좌표계로 바꿉니다.
+               
+                Vector3 P1 = other.transform.position +
+                            new Vector3(diagonalLength * Mathf.Cos(calcAngle)
+                                        , diagonalLength * Mathf.Sin(calcAngle)
+                                        , 0);
+                Vector3 P2 = other.transform.position +
+                            new Vector3(diagonalLength * Mathf.Cos(calcAngle + (90.0f * Mathf.PI / 180.0f))
+                                        , diagonalLength * Mathf.Sin(calcAngle + (90.0f * Mathf.PI / 180.0f))
+                                        , 0);
+
+                // 플레이어의 발가락 좌표
+                float pSizeX = spr.size.x;
+                float pSizeY = spr.size.y;
+                float pRotationZ = this.transform.rotation.eulerAngles.z * Mathf.PI / 180.0f;
+                //if (pRotationZ > 180) pRotationZ -= 360;
+                Vector3 playerFoot = new Vector3( this.transform.position.x + (Mathf.Sin(pRotationZ) * pSizeY/2.0f)
+                                                 ,this.transform.position.y - (Mathf.Cos(pRotationZ) * pSizeY/2.0f)
+                                                 ,0);
+                Vector3 playerVec = new Vector3( (Mathf.Sin(pRotationZ * Mathf.PI / 180.0f) * pSizeY / 2.0f)
+                                                 ,-Mathf.Abs((Mathf.Cos(pRotationZ * Mathf.PI / 180.0f) * pSizeY / 2.0f))
+                                                 , 0);
+                // 플레이어가 X축 기준으로 들어와 있는가.
+                bool isOnGroundX = P2.x <= playerFoot.x && playerFoot.x <= P1.x;
+
+                // 플레이어가 Y축 기준으로 들어와 있는가.
+                float gradient = (P1.y - P2.y) / (P1.x - P2.x);
+                // 예외처리; P1과 P2는 언제나 y값이 높은 두 모서리이기 때문에 gradient가 0이 나올일은 없음.
+                float surfaceY = P2.y + gradient * (playerFoot.x - P2.x);
+
+                bool isOnGroundY = (surfaceY <= playerFoot.y && playerFoot.y <= surfaceY + yErrorValue);
+                
+                // 디버깅용 ㅠ
+                //Debug.Log("[theta + angle] : " + theta + "  "+ angle);
+                //Debug.Log("[difference] : " + (playerFoot.y-surfaceY));
+                //Debug.Log("[P1.y , P2.y]: ( " + P1.y + " , " + P2.y + " )");
+                //Debug.Log("[P1.x ] : " + P1.x + "  [P2.x ] : " + P2.x);
+                //Debug.Log("[gradient] : " + gradient);
+                //Debug.Log("[surfaceY] : " + surfaceY + "  [playerFoot] : " + playerFoot);
+                //Debug.Log("[pRotationZ] : " + pRotationZ );
+                //Debug.Log("[sin cos0] : " + Mathf.Sin(pRotationZ * Mathf.PI / 180.0f) +" "+ Mathf.Cos(pRotationZ) * Mathf.PI / 180.0f);
+                //Debug.Log("[playerVec] : " + playerVec );
+                //Debug.Log("On X " + isOnGroundX + "/ On Y " + isOnGroundY);
+
+                if (isOnGroundX 
+                 && isOnGroundY 
+                 && rigid.velocity.y <= 0.05f)
+                {
+                    //Debug.Log("Clear");
+                    isJumping = false;
+                }
             }
+
         }
+        
     }
 
     // =====================[외부 스크립트에서 참조용 함수]
@@ -349,6 +407,27 @@ public class PlayerState : MonoBehaviour {
         {
             if (rigid.velocity.y > 0) rigid.AddForce(Physics2D.gravity * 2, ForceMode2D.Force);
             else rigid.AddForce(-Physics2D.gravity * 2, ForceMode2D.Force);
+        }
+    }
+
+    private void AdjustBalance()
+    {
+        if (transform.rotation.eulerAngles.z >= 20 && transform.rotation.eulerAngles.z <= 180)
+        {
+            transform.Rotate(new Vector3(0, 0, -10), Space.Self);
+        }
+        if (transform.rotation.eulerAngles.z >= 40 && transform.rotation.eulerAngles.z <= 180)
+        {
+            transform.Rotate(new Vector3(0, 0, -20), Space.Self);
+        }
+
+        if (transform.rotation.eulerAngles.z > 180 && transform.rotation.eulerAngles.z <= 360 - 20)
+        {
+            transform.Rotate(new Vector3(0, 0, 10), Space.Self);
+        }
+        if (transform.rotation.eulerAngles.z > 180 && transform.rotation.eulerAngles.z <= 360 - 40)
+        {
+            transform.Rotate(new Vector3(0, 0, 20), Space.Self);
         }
     }
 
