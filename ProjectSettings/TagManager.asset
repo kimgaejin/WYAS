@@ -56,28 +56,40 @@ TagManager:
   - name: New Layer
     uniqueID: 1423741019
     locked: 0
-  - name: GROUND2
+  - name: GROUND2_BACK
     uniqueID: 704063029
     locked: 0
-  - name: GROUND1
-    uniqueID: 755279515
-    locked: 0
-  - name: New Layer
-    uniqueID: 3135272245
-    locked: 0
-  - name: New Layer
+  - name: GROUND2_FRONT
     uniqueID: 2476421119
     locked: 0
-  - name: OBJECT_4ST
+  - name: GROUND1_BACK
+    uniqueID: 755279515
+    locked: 0
+  - name: GROUND1_FRONT
+    uniqueID: 3135272245
+    locked: 0
+  - name: OBJECT_4ST_BACK
     uniqueID: 3351952115
     locked: 0
-  - name: OBJECT_3ST
+  - name: OBJECT_4ST_FRONT
+    uniqueID: 1757700961
+    locked: 0
+  - name: OBJECT_3ST_BACK
+    uniqueID: 460125421
+    locked: 0
+  - name: OBJECT_3ST_FRONT
     uniqueID: 2254770123
     locked: 0
-  - name: OBJECT_2ST
+  - name: OBJECT_2ST_BACK
+    uniqueID: 2628531925
+    locked: 0
+  - name: OBJECT_2ST_FRONT
     uniqueID: 2386009217
     locked: 0
-  - name: OBJECT_1ST
+  - name: OBJECT_1ST_BACK
+    uniqueID: 34445837
+    locked: 0
+  - name: OBJECT_1ST_FRONT
     uniqueID: 2334999469
     locked: 0
   - name: PLAYER

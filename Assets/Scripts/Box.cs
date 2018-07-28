@@ -25,6 +25,12 @@ public class Box : ObjectProperty {
         rigid = GetComponent<Rigidbody2D>();
     }
 
+    private void Update()
+    {
+        AdjustBalance();
+        ResetVelocityX();
+    }
+
     override public void DoInteracting()
     {
         pState.makeJump(false);
@@ -73,7 +79,7 @@ public class Box : ObjectProperty {
         float pY = player.transform.position.y;
         float bX = transform.position.x;
         float bY = transform.position.y;
-        bool soFarBox = Mathf.Abs( (pX - bX)*(pX - bX)+(pY - bY)*(pY - bY)) >= 3.0f;
+        bool soFarBox = Mathf.Abs( (pX - bX)*(pX - bX)+(pY - bY)*(pY - bY)) >= 2.0f;
         if (soFarBox) {
             Debug.Log("soFarBox");
             StopInteracting();
@@ -86,12 +92,12 @@ public class Box : ObjectProperty {
                 > (GetSize().x / 2 + pState.GetSizeX() / 2) * distantErrorValue)
             {
                 if (Input.GetKey(KeyCode.D))
-                    rigid.AddForce(distance2d * 100, ForceMode2D.Force);
-                    //rigid.transform.Translate(Vector2.right * horizonSpeedSave * decelration * Time.deltaTime);
+                    //rigid.AddForce(distance2d * 100, ForceMode2D.Force);
+                    rigid.transform.Translate(Vector2.right * horizonSpeedSave * decelration * Time.deltaTime);
 
                 if (Input.GetKey(KeyCode.A))
-                    rigid.AddForce(distance2d * 100, ForceMode2D.Force);
-                    //rigid.transform.Translate(Vector2.left * horizonSpeedSave * decelration * Time.deltaTime);
+                    //rigid.AddForce(distance2d * 100, ForceMode2D.Force);
+                    rigid.transform.Translate(Vector2.left * horizonSpeedSave * decelration * Time.deltaTime);
             }
             else
             {
@@ -114,5 +120,36 @@ public class Box : ObjectProperty {
         pState.makeHorizonspeed(horizonSpeedSave);
         interactingState = false;
         rigid.mass = 100;
+    }
+
+    private void AdjustBalance()
+    {
+        if (transform.rotation.eulerAngles.z >= 30 && transform.rotation.eulerAngles.z <= 180)
+        {
+            // transform.Rotate(new Vector3(0, 0, -10), Space.Self);
+            transform.Rotate(new Vector3(0, 0, -5), Space.World);
+        }
+        if (transform.rotation.eulerAngles.z >= 45 && transform.rotation.eulerAngles.z <= 180)
+        {
+            // transform.Rotate(new Vector3(0, 0, -20), Space.Self);
+            transform.Rotate(new Vector3(0, 0, -20), Space.World);
+        }
+
+        if (transform.rotation.eulerAngles.z > 180 && transform.rotation.eulerAngles.z <= 360 - 30)
+        {
+            // transform.Rotate(new Vector3(0, 0, 10), Space.Self);
+            transform.Rotate(new Vector3(0, 0, 5), Space.World);
+        }
+        if (transform.rotation.eulerAngles.z > 180 && transform.rotation.eulerAngles.z <= 360 - 45)
+        {
+            //  transform.Rotate(new Vector3(0, 0, 20), Space.Self);
+            transform.Rotate(new Vector3(0, 0, 20), Space.World);
+        }
+    }
+
+    // 경사로에서 미끄러지는 걸 막음 && 절벽에서 미끄러지는 속도를 줄임.
+    private void ResetVelocityX()
+    {
+        rigid.velocity = new Vector2(0, rigid.velocity.y);
     }
 } 

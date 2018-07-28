@@ -41,8 +41,7 @@ public class Ladder : ObjectProperty {
 
     override public void IsInteracting()
     {
-        
-        if (player.position.y > maxY || player.position.y < minY)
+        if (player.position.y + pState.GetSizeY()/2 > maxY || player.position.y < minY - pState.GetSizeY() / 2)
         {
             StopInteracting();
         }

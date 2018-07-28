@@ -18,7 +18,7 @@ public class PlayerState : MonoBehaviour {
 
     // setting
     private float horizonSpeed = 0.05f;
-	private float jumpPower = 5.0f;
+	private float jumpPower = 80.0f;
     private float horizon;
     private float vertical;
     private bool isFacedR;
@@ -58,6 +58,7 @@ public class PlayerState : MonoBehaviour {
     private void Update()
     {
         AdjustBalance();
+        ResetVelocityX();
         Move();
         Jump();
         CheckColliders();
@@ -367,7 +368,7 @@ public class PlayerState : MonoBehaviour {
             if (isJumping == true)
             {
                 int layerMask = (1 << LayerMask.NameToLayer("OBJECT_3ST")); // 밧줄과 사다리
-                Collider2D[] colls = Physics2D.OverlapBoxAll(transform.position, new Vector2(1.0f, 20.0f), 0.0f, layerMask, 0);
+                Collider2D[] colls = Physics2D.OverlapBoxAll(transform.position, new Vector2(1.0f, 40.0f), 0.0f, layerMask, 0);
                
                 Collider2D adjacentCol = null;
                 foreach (Collider2D col in colls)
@@ -412,23 +413,33 @@ public class PlayerState : MonoBehaviour {
 
     private void AdjustBalance()
     {
-        if (transform.rotation.eulerAngles.z >= 20 && transform.rotation.eulerAngles.z <= 180)
+        if (transform.rotation.eulerAngles.z >= 30 && transform.rotation.eulerAngles.z <= 180)
         {
-            transform.Rotate(new Vector3(0, 0, -10), Space.Self);
+           // transform.Rotate(new Vector3(0, 0, -10), Space.Self);
+           transform.Rotate(new Vector3(0, 0, -5), Space.World);
         }
-        if (transform.rotation.eulerAngles.z >= 40 && transform.rotation.eulerAngles.z <= 180)
+        if (transform.rotation.eulerAngles.z >= 45 && transform.rotation.eulerAngles.z <= 180)
         {
-            transform.Rotate(new Vector3(0, 0, -20), Space.Self);
+            // transform.Rotate(new Vector3(0, 0, -20), Space.Self);
+            transform.Rotate(new Vector3(0, 0, -20), Space.World);
         }
 
-        if (transform.rotation.eulerAngles.z > 180 && transform.rotation.eulerAngles.z <= 360 - 20)
+        if (transform.rotation.eulerAngles.z > 180 && transform.rotation.eulerAngles.z <= 360 - 30)
         {
-            transform.Rotate(new Vector3(0, 0, 10), Space.Self);
+            // transform.Rotate(new Vector3(0, 0, 10), Space.Self);
+            transform.Rotate(new Vector3(0, 0, 5), Space.World);
         }
-        if (transform.rotation.eulerAngles.z > 180 && transform.rotation.eulerAngles.z <= 360 - 40)
+        if (transform.rotation.eulerAngles.z > 180 && transform.rotation.eulerAngles.z <= 360 - 45)
         {
-            transform.Rotate(new Vector3(0, 0, 20), Space.Self);
+            //  transform.Rotate(new Vector3(0, 0, 20), Space.Self);
+            transform.Rotate(new Vector3(0, 0, 20), Space.World);
         }
+    }
+
+    // 경사로에서 미끄러지는 걸 막음 && 절벽에서 미끄러지는 속도를 줄임.
+    private void ResetVelocityX()
+    {
+        rigid.velocity = new Vector2(0, rigid.velocity.y);
     }
 
     private void RotatePlayerGPH(bool reverseType)
