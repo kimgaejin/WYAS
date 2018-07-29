@@ -23,7 +23,7 @@ public class ObjectProperty : MonoBehaviour {
 
     // 범위 안인가
     
-    public bool GetIsInRange()
+    public virtual bool GetIsInRange()
     {
         Vector3 distance = player.position - transform.position;
 

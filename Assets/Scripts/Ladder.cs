@@ -19,9 +19,16 @@ public class Ladder : ObjectProperty {
         base.mustFaced = true;
         pRigid = GameObject.Find("Player").GetComponent<Rigidbody2D>();
 
+        Transform body = transform.GetChild(0);
+        SpriteRenderer bodySpr = body.gameObject.GetComponent<SpriteRenderer>();
+        float bodyLength = bodySpr.bounds.size.y;
+
         canUse = true;
-        maxY = transform.position.y + GetSize().y/2 + pState.GetSizeY()/2;
-        minY = transform.position.y - GetSize().y / 2;
+        maxY = transform.position.y + pState.GetSizeY()/2;
+        minY = transform.position.y - bodyLength;
+        
+        Transform decorationOfTale = transform.GetChild(1);
+        decorationOfTale.position -= new Vector3(0, bodyLength, 0);
     }
 
     override public void DoInteracting()
@@ -41,6 +48,7 @@ public class Ladder : ObjectProperty {
 
     override public void IsInteracting()
     {
+        Debug.Log("일단 들어오긴 해");
         if (player.position.y + pState.GetSizeY()/2 > maxY || player.position.y < minY - pState.GetSizeY() / 2)
         {
             StopInteracting();
@@ -51,10 +59,10 @@ public class Ladder : ObjectProperty {
         }
 
         if (Input.GetKey(KeyCode.W))
-            pRigid.transform.Translate(Vector2.up * ladderSpeed * Time.deltaTime);
+            pRigid.transform.Translate(Vector2.up * ladderSpeed * Time.deltaTime, Space.World);
 
         if (Input.GetKey(KeyCode.S))
-            pRigid.transform.Translate(Vector2.down * ladderSpeed * Time.deltaTime);
+            pRigid.transform.Translate(Vector2.down * ladderSpeed * Time.deltaTime, Space.World);
     }
 
     override public void StopInteracting()
@@ -68,6 +76,38 @@ public class Ladder : ObjectProperty {
         StopCoroutine("MoveToLadder");
         player.transform.Translate(new Vector3(transform.position.x - player.transform.position.x,0,0));
         // StartCoroutine("CoolTime");
+    }
+
+    public override bool GetIsInRange()
+    {
+
+        Vector3 distance = player.position - transform.position;
+
+        if (mustFaced == true)
+        {
+            if ((distance.x <= 0 && pState.GetIsFacedR() == false)
+                || (distance.x >= 0 && pState.GetIsFacedR() == true))
+            {
+                return false;
+            }
+        }
+
+        Transform body = transform.GetChild(0);
+        SpriteRenderer bodySpr = body.gameObject.GetComponent<SpriteRenderer>();
+        float bodyLength = bodySpr.bounds.size.y;
+
+        bool playerBeUnderRopePosition = distance.y <= 0;
+        bool playerBeOnRopeLength = distance.y >= -bodyLength;
+
+        if (playerBeOnRopeLength && playerBeUnderRopePosition)
+        {
+            if (Mathf.Abs(distance.x) <= GetRangeX())
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     IEnumerator MoveToLadder()

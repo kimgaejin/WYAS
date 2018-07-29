@@ -278,7 +278,7 @@ public class PlayerState : MonoBehaviour {
             if (isReversed == false) arrow= Vector2.up;
             else arrow = Vector2.down;
 
-            Debug.Log("호잇짜다!!");
+           // Debug.Log("호잇짜다!!");
             rigid.AddForce(arrow * jumpPower, ForceMode2D.Impulse);
             isJumping = true;
         }
@@ -368,7 +368,7 @@ public class PlayerState : MonoBehaviour {
             if (isJumping == true)
             {
                 int layerMask = (1 << LayerMask.NameToLayer("OBJECT_3ST")); // 밧줄과 사다리
-                Collider2D[] colls = Physics2D.OverlapBoxAll(transform.position, new Vector2(1.0f, 40.0f), 0.0f, layerMask, 0);
+                Collider2D[] colls = Physics2D.OverlapBoxAll(transform.position, new Vector2(1.0f, Mathf.Infinity), 0.0f, layerMask, 0);
                
                 Collider2D adjacentCol = null;
                 foreach (Collider2D col in colls)
