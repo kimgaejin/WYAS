@@ -16,7 +16,9 @@ public class ObjectProperty : MonoBehaviour {
     protected void Awake()
     {
         interactingState = false;
-        size = this.GetComponent<SpriteRenderer>().bounds.size;
+        // 과거, 자신이 spriteRenderer 가졌을 때 시절
+        //size = this.GetComponent<SpriteRenderer>().bounds.size;
+        size = transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().bounds.size;
         player = GameObject.Find("Player").transform;
         pState = GameObject.Find("Player").GetComponent<PlayerState>();
     }

@@ -28,7 +28,7 @@ public class Ladder : ObjectProperty {
         minY = transform.position.y - bodyLength;
         
         Transform decorationOfTale = transform.GetChild(1);
-        decorationOfTale.position -= new Vector3(0, bodyLength, 0);
+        decorationOfTale.position = transform.position - new Vector3(0, bodyLength, 0);
     }
 
     override public void DoInteracting()
@@ -48,7 +48,6 @@ public class Ladder : ObjectProperty {
 
     override public void IsInteracting()
     {
-        Debug.Log("일단 들어오긴 해");
         if (player.position.y + pState.GetSizeY()/2 > maxY || player.position.y < minY - pState.GetSizeY() / 2)
         {
             StopInteracting();
