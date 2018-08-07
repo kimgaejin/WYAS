@@ -30,7 +30,7 @@ public class PlayerState : MonoBehaviour {
     // bit switch
     private bool isFixed;
     private bool canMove;
-    private bool isJumping;
+    private bool isJumping = false;
     private bool canJump;
     private bool isInteracting;
     private bool canInteract;
@@ -84,9 +84,10 @@ public class PlayerState : MonoBehaviour {
                 return;
             }
 
-            float otherSizeX = otherSpr.size.x;
-            float otherSizeY = otherSpr.size.y;
             
+            float otherSizeX = other.collider.bounds.size.x;
+            float otherSizeY = other.collider.bounds.size.y;
+
             // 원점부터 모서리까지의 기본거리.
             float diagonalLength = Mathf.Sqrt(otherSizeX * otherSizeX + otherSizeY * otherSizeY) / 2.0f ;
             // 사각형의 모서리까지 기본 각도. 45도
@@ -105,6 +106,7 @@ public class PlayerState : MonoBehaviour {
                 //Debug.Log("===================================================");
                 // 극좌표계를 직교좌표계로 바꿉니다.
                
+                // P1, P2는 밟는 사각 땅의 가장 위 두 모서리.
                 Vector3 P1 = other.transform.position +
                             new Vector3(diagonalLength * Mathf.Cos(calcAngle)
                                         , diagonalLength * Mathf.Sin(calcAngle)
@@ -145,7 +147,7 @@ public class PlayerState : MonoBehaviour {
                 //Debug.Log("[pRotationZ] : " + pRotationZ );
                 //Debug.Log("[sin cos0] : " + Mathf.Sin(pRotationZ * Mathf.PI / 180.0f) +" "+ Mathf.Cos(pRotationZ) * Mathf.PI / 180.0f);
                 //Debug.Log("[playerVec] : " + playerVec );
-                //Debug.Log("On X " + isOnGroundX + "/ On Y " + isOnGroundY);
+               // Debug.Log("On X " + isOnGroundX + "/ On Y " + isOnGroundY);
 
                 if (isOnGroundX 
                  && isOnGroundY 
@@ -263,6 +265,8 @@ public class PlayerState : MonoBehaviour {
 
     private void Jump()
     {
+        //Debug.Log("is/can: " + isJumping + canJump); 
+
         if (isJumping == true) return;
         if (canJump == false) return;
 

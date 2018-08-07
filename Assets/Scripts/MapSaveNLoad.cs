@@ -14,6 +14,7 @@ public class ObjectDetailInfo
     public string key;
     public string type;
     public string [] spriteName;
+    public double [] colorCode;
     public double [] posX;
     public double [] posY;
     public double [] posZ;
@@ -21,12 +22,13 @@ public class ObjectDetailInfo
     public double [] scaleY;
     public double [] rotationZ;
     public double [] value;
-    public ObjectDetailInfo(string in_key, string in_type, string [] in_spriteName, double[] in_x, double[] in_y, double[] in_z
+    public ObjectDetailInfo(string in_key, string in_type, string [] in_spriteName, double [] in_colorCode, double[] in_x, double[] in_y, double[] in_z
                             ,double [] in_scaleX, double [] in_scaleY, double [] in_rotationZ, double [] in_value)
     {
         key = in_key;
         type = in_type;
         spriteName = (string[])in_spriteName.Clone();
+        colorCode = (double[])in_colorCode.Clone();
         posX = (double[])in_x.Clone();
         posY = (double[])in_y.Clone();
         posZ = (double[])in_z.Clone();
@@ -82,6 +84,7 @@ public class MapSaveNLoad : MonoBehaviour {
                 int childSize = obj.GetChildCount();
 
                 string[] sprName = new string[childSize + 1];
+                double[] colorCode = new double[childSize + 1];
                 double[] posX = new double[childSize + 1];
                 double[] posY = new double[childSize + 1];
                 double[] posZ = new double[childSize + 1];
@@ -92,11 +95,27 @@ public class MapSaveNLoad : MonoBehaviour {
 
                 try
                 {
-                    sprName[0] = obj.transform.GetComponent<SpriteRenderer>().sprite.name;
+                    SpriteRenderer objSpr = obj.transform.GetComponent<SpriteRenderer>();
+                    sprName[0] = objSpr.sprite.name;
+                    Color objColor = objSpr.color;
+                    colorCode[0] = 0.0;
+
+                    colorCode[0] += (int)(objColor.r*255);
+                    colorCode[0] *= 0.001;
+                
+                    colorCode[0] += (int)(objColor.g*255);
+                    colorCode[0] *= 0.001;
+
+                    colorCode[0] += (int)(objColor.b*255);
+                    colorCode[0] *= 0.001;
+
+                    colorCode[0] += (int)(objColor.a*255);
+                    colorCode[0] *= 0.001;
                 }
                 catch
                 {
                     sprName[0] = "null";
+                    colorCode[0] = 0.0f;
                 }
 
                 Vector3 pos = obj.transform.position;
@@ -134,7 +153,7 @@ public class MapSaveNLoad : MonoBehaviour {
 
                     rotationZ[0] = child.rotation.eulerAngles.z;
                 }
-                ObjectDetailInfoList.Add(new ObjectDetailInfo(key, nameArr[0], sprName, posX, posY, posZ, scaleX, scaleY, rotationZ, value));
+                ObjectDetailInfoList.Add(new ObjectDetailInfo(key, nameArr[0], sprName, colorCode, posX, posY, posZ, scaleX, scaleY, rotationZ, value));
             }
 
         }
@@ -143,10 +162,6 @@ public class MapSaveNLoad : MonoBehaviour {
         saveFile += infoObjJson.ToString();
         saveFile += "}";
         ObjectDetailInfoList.Clear();
-        
-        //int saveFileLength = saveFile.Length - 3;
-        //saveFile = saveFile.Substring(0, saveFileLength);
-
         
         File.WriteAllText(Application.dataPath + filePath, (saveFile));
         Debug.Log("세이브 완료");
@@ -163,7 +178,7 @@ public class MapSaveNLoad : MonoBehaviour {
         {
             string jsonStr = File.ReadAllText(Application.dataPath + filePath);
 
-            Debug.Log(jsonStr);
+           // Debug.Log(jsonStr);
 
             JsonData jsonData = JsonMapper.ToObject(jsonStr);
 
@@ -177,26 +192,52 @@ public class MapSaveNLoad : MonoBehaviour {
                 if (tr_object == null) tr_object = Map;
 
                 string type = jsonData["Map"][i]["type"].ToString();
-                float X = (float)(double)jsonData["Map"][i]["posX"][0];
-                float Y = (float)(double)jsonData["Map"][i]["posY"][0];
-                float Z = (float)(double)jsonData["Map"][i]["posZ"][0];
-                Vector3 Pos = new Vector3(X, Y, Z);
-                float scaleX = (float)(double)jsonData["Map"][i]["scaleX"][0];
-                float scaleY = (float)(double)jsonData["Map"][i]["scaleY"][0];
-                Vector3 scale = new Vector3(scaleX, scaleY, 0);
-                float rotationZ = (float)(double)jsonData["Map"][i]["rotationZ"][0];
-                string sprName = jsonData["Map"][i]["spriteName"][0].ToString();
-                Sprite spr = Resources.Load<Sprite>("Sprites/" + sprName);
 
                 GameObject obj = Resources.Load<GameObject>("Prefab/" + type);
                 if (obj != null)
                 {
+                    float X = (float)(double)jsonData["Map"][i]["posX"][0];
+                    float Y = (float)(double)jsonData["Map"][i]["posY"][0];
+                    float Z = (float)(double)jsonData["Map"][i]["posZ"][0];
+                    Vector3 Pos = new Vector3(X, Y, Z);
+                    float scaleX = (float)(double)jsonData["Map"][i]["scaleX"][0];
+                    float scaleY = (float)(double)jsonData["Map"][i]["scaleY"][0];
+                    Vector3 scale = new Vector3(scaleX, scaleY, 0);
+                    float rotationZ = (float)(double)jsonData["Map"][i]["rotationZ"][0];
+                    string sprName = jsonData["Map"][i]["spriteName"][0].ToString();
+                    double colorCode = (double)jsonData["Map"][i]["colorCode"][0];
+                    Color objColor = new Color();
+
+                    colorCode *= 1000;
+                    objColor.a = (float)colorCode / 255;
+                    colorCode -= (int)colorCode;
+
+                    colorCode *= 1000;
+                    objColor.b = (float)colorCode / 255;
+                    colorCode -= (int)colorCode;
+
+                    colorCode *= 1000;
+                    objColor.g = (float)colorCode / 255;
+                    colorCode -= (int)colorCode;
+
+                    colorCode *= 1000;
+                    objColor.r = (float)colorCode / 255;
+                    colorCode -= (int)colorCode;
+
+                    Sprite spr = Resources.Load<Sprite>("Sprites/" + sprName);
+                     
                     Quaternion quat = new Quaternion();
                     quat.eulerAngles = new Vector3(0, 0, rotationZ);
                     GameObject insObj = Instantiate(obj, Pos, quat);
 
                     insObj.transform.localScale = scale;
-                    if (sprName != "null") insObj.GetComponent<SpriteRenderer>().sprite = spr;
+                    if (sprName != "null")
+                    {
+                        SpriteRenderer insSpr = insObj.GetComponent<SpriteRenderer>();
+                        insSpr.sprite = spr;
+                        insSpr.color = objColor;
+                    }
+
                     insObj.transform.parent = tr_object;
 
                     int childCount = jsonData["Map"][i]["posX"].Count;
@@ -210,6 +251,7 @@ public class MapSaveNLoad : MonoBehaviour {
                         Vector3 cScale = new Vector3(cScaleX, cScaleY, 0);
                         float cRotationZ = (float)(double)jsonData["Map"][i]["rotationZ"][j];
                         string cSprName = jsonData["Map"][i]["spriteName"][j].ToString();
+                        
                         Sprite cSpr = Resources.Load<Sprite>("Sprites/" + cSprName);
 
                         Quaternion cQuat = new Quaternion();
@@ -218,7 +260,31 @@ public class MapSaveNLoad : MonoBehaviour {
                         childObj.localRotation = cQuat;
 
                         childObj.localScale = cScale;
-                        if (cSprName != "null") childObj.gameObject.GetComponent<SpriteRenderer>().sprite = cSpr;
+                        if (cSprName != "null")
+                        {
+                            SpriteRenderer cInsSpr = childObj.GetComponent<SpriteRenderer>();
+                            cInsSpr.sprite = cSpr;
+
+                            double cColorCode = (double)jsonData["Map"][i]["colorCode"][j];
+                            Color cObjColor = new Color();
+
+                            cColorCode *= 1000;
+                            cObjColor.a = (int)cColorCode/255;
+                            cColorCode -= (int)cColorCode;
+
+                            cColorCode *= 1000;
+                            cObjColor.b = (int)cColorCode / 255;
+                            cColorCode -= (int)cColorCode;
+
+                            cColorCode *= 1000;
+                            cObjColor.g = (int)cColorCode / 255;
+                            cColorCode -= (int)cColorCode;
+
+                            cColorCode *= 1000;
+                            cObjColor.r = (int)cColorCode / 255;
+                            cColorCode -= (int)cColorCode;
+                            cInsSpr.color = objColor;
+                        }
                     }
                 }
                 else
