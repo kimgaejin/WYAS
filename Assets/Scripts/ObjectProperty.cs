@@ -8,7 +8,7 @@ public class ObjectProperty : MonoBehaviour {
     protected Transform player;
     protected PlayerState pState;
 
-    private Vector2 size;
+    protected Vector2 size;
     protected float rangeX = 0;
     protected bool mustFaced = false;
     protected bool interactingState = false;
@@ -18,7 +18,8 @@ public class ObjectProperty : MonoBehaviour {
         interactingState = false;
         // 과거, 자신이 spriteRenderer 가졌을 때 시절
         //size = this.GetComponent<SpriteRenderer>().bounds.size;
-        size = transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().bounds.size;
+
+        SetSize();
         player = GameObject.Find("Player").transform;
         pState = GameObject.Find("Player").GetComponent<PlayerState>();
     }
@@ -77,4 +78,17 @@ public class ObjectProperty : MonoBehaviour {
 
     }
 
+    public virtual void SetSize()
+    {
+        try
+        {
+            size = transform.GetChild(0).gameObject.GetComponent<SpriteRenderer>().bounds.size;
+        }
+        catch
+        {
+            Debug.Log(transform.name.ToString() + "의 자식의 SpriteRenderer를 ObjectProperty에서 찾지 못함.");
+            size = Vector2.zero;
+        }
+
+        }
 }

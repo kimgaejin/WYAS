@@ -42,7 +42,7 @@ public class Ladder : ObjectProperty {
         interactingState = true;
 
         pState.makeResetSpeed();
-       // pState.makeIsJumping(false);
+        pState.makeIsJumping(false);
         StartCoroutine("MoveToLadder");
     }
 

@@ -6,6 +6,92 @@ public class CameraMovement : MonoBehaviour {
 
     public float tempFrame = 60;
 
+    private Transform player;
+    private Vector3 rangeOfChange;
+
+    private Vector3 startCameraPosition;
+    private Vector3 endCameraPosition;
+    private Vector3 vel;
+    private Vector3 acc;
+
+    // CONSTANTS
+    private Vector3 increasePositionX;
+    private Vector3 increasePositionY;
+    private Vector3 increaseVelocityX;
+    private Vector3 increaseVelocityY;
+    private Vector3 increaseAccelationX;
+    private Vector3 increaseAccelationY;
+
+    private void Awake()
+    {
+        startCameraPosition = this.transform.position;
+        endCameraPosition = startCameraPosition;
+        vel = Vector3.zero;
+
+        increasePositionX = new Vector3(8.5f, 0, 0);
+        increasePositionY = new Vector3(0, 6.5f, 0);
+        increaseVelocityX = new Vector3(1, 0, 0);
+        increaseVelocityY = new Vector3(0, 1, 0);
+        increaseAccelationX = new Vector3(1, 0, 0);
+        increaseAccelationY = new Vector3(0, 1, 0);
+    }
+
+    private void Start()
+    {
+        player = GameObject.Find("Player").transform;
+    }
+
+    private void Update()
+    {
+        MoveCamera();
+    }
+
+    private void MoveCamera()
+    {
+        Vector3 distance = player.position - endCameraPosition;
+
+        if (distance.x < -4.25f)    // 플레이어가 왼쪽
+        {
+            endCameraPosition -= increasePositionX;
+           
+        }
+        else if (distance.x > 4.25f)    // PLAYER IS RIGHT
+        {
+            endCameraPosition += increasePositionX;
+        }
+        else if (distance.y > 2.75f)    // PLAYER IS TOP
+        {
+            endCameraPosition += increasePositionY;
+        }
+        else if (distance.y < -3.75f)    // PLAYER IS BOTTOM
+        {
+            endCameraPosition -= increasePositionY;
+        }
+        MoveToEnd();
+
+        this.transform.position += vel * Time.deltaTime;
+       // Debug.Log("VELOCITY: " + vel);
+    }
+
+    private void MoveToEnd() // 플레이어 근처 카메라위치로 이동
+    {
+        Vector3 moveArrow = endCameraPosition - this.transform.position;
+       // Debug.Log("MOVEARROW: "+moveArrow);
+        //Debug.Log("end: " + endCameraPosition +" camera  "+this.transform.position) ;
+        if (vel.x * moveArrow.x < 0)
+        {
+            vel.x = 0;
+        }
+        if (vel.y * moveArrow.y < 0)
+        {
+            vel.y = 0;
+        }
+
+        vel = moveArrow;
+    }
+    /*
+    public float tempFrame = 60;
+
     private Vector3 StandardPosition;
     private float cameraInitialVelocity = 1.0f;
     private Vector3 vel;
@@ -31,6 +117,7 @@ public class CameraMovement : MonoBehaviour {
         //if (isAdjusting == true) return;
 
         Vector3 distance = CheckDistanceToPlayer();
+        Debug.Log(distance);
 
         if (Mathf.Abs(distance.x) > intervalPosX/2)
         {
@@ -125,4 +212,5 @@ public class CameraMovement : MonoBehaviour {
         distance = StandardPosition + new Vector3(intervalPosX * crossX, intervalPosY * crossY, 0) - player.position;
         return distance;
     }
+    */
 }

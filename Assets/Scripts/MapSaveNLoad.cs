@@ -100,17 +100,21 @@ public class MapSaveNLoad : MonoBehaviour {
                     Color objColor = objSpr.color;
                     colorCode[0] = 0.0;
 
-                    colorCode[0] += (int)(objColor.r*255);
+                    colorCode[0] += (int)(objColor.r * 255);
                     colorCode[0] *= 0.001;
-                
-                    colorCode[0] += (int)(objColor.g*255);
-                    colorCode[0] *= 0.001;
+                   // colorCode[0] -= 0.001;
 
-                    colorCode[0] += (int)(objColor.b*255);
+                    colorCode[0] += (int)(objColor.g*255) - 0.001;
                     colorCode[0] *= 0.001;
+                  //  colorCode[0] -= 0.001;
 
-                    colorCode[0] += (int)(objColor.a*255);
+                    colorCode[0] += (int)(objColor.b*255) - 0.001;
                     colorCode[0] *= 0.001;
+                  //  colorCode[0] -= 0.001;
+
+                    colorCode[0] += (int)(objColor.a*255) - 0.001;
+                    colorCode[0] *= 0.001;
+                   // colorCode[0] -= 0.001;
                 }
                 catch
                 {
@@ -135,11 +139,36 @@ public class MapSaveNLoad : MonoBehaviour {
                     Transform child = obj.GetChild(i - 1);
                     try
                     {
-                        sprName[i] = child.transform.GetComponent<SpriteRenderer>().sprite.name;
+                        SpriteRenderer cObjSpr = child.transform.GetComponent<SpriteRenderer>();
+                        if (cObjSpr == null) Debug.Log(nameArr[0].ToString()+" 스프라이트가 없었네");
+                        sprName[i] = cObjSpr.sprite.name;
+
+                        Color cObjColor = cObjSpr.color;
+                        if (cObjColor == null) Debug.Log(nameArr[0].ToString() + " 컬러가 없었네");
+
+                        colorCode[i] = 0.0;
+
+                        colorCode[i] += (int)(cObjColor.r * 255);
+                        colorCode[i] *= 0.001;
+                       // colorCode[i] -= 0.001;
+
+                        colorCode[i] += (int)(cObjColor.g * 255) - 0.001;
+                        colorCode[i] *= 0.001;
+                       // colorCode[i] -= 0.001;
+
+                        colorCode[i] += (int)(cObjColor.b * 255) - 0.001;
+                        colorCode[i] *= 0.001;
+                        //colorCode[i] -= 0.001;
+
+                        colorCode[i] += (int)(cObjColor.a * 255) - 0.001;
+                        colorCode[i] *= 0.001;
+                        //colorCode[i] -= 0.001;
+                       // Debug.Log(nameArr[0].ToString() + "'s color" + colorCode[i]);
                     }
                     catch
                     {
                         sprName[i] = "null";
+                        colorCode[i] = 0.0f;
                     }
 
                     Vector3 childPos = child.localPosition;
@@ -208,6 +237,8 @@ public class MapSaveNLoad : MonoBehaviour {
                     double colorCode = (double)jsonData["Map"][i]["colorCode"][0];
                     Color objColor = new Color();
 
+                  //  Debug.Log(type+" colorCode : "+ colorCode);
+
                     colorCode *= 1000;
                     objColor.a = (float)colorCode / 255;
                     colorCode -= (int)colorCode;
@@ -256,6 +287,7 @@ public class MapSaveNLoad : MonoBehaviour {
 
                         Quaternion cQuat = new Quaternion();
                         quat.eulerAngles = new Vector3(0, 0, rotationZ);
+                        //Transform childObj = insObj.transform.GetChild(j - 1);
                         Transform childObj = insObj.transform.GetChild(j - 1);
                         childObj.localRotation = cQuat;
 
@@ -269,21 +301,22 @@ public class MapSaveNLoad : MonoBehaviour {
                             Color cObjColor = new Color();
 
                             cColorCode *= 1000;
-                            cObjColor.a = (int)cColorCode/255;
+                            cObjColor.a = (float)((int)cColorCode)/ (float)255;
                             cColorCode -= (int)cColorCode;
 
                             cColorCode *= 1000;
-                            cObjColor.b = (int)cColorCode / 255;
+                            cObjColor.b = (float)((int)cColorCode) / (float)255;
                             cColorCode -= (int)cColorCode;
 
                             cColorCode *= 1000;
-                            cObjColor.g = (int)cColorCode / 255;
+                            cObjColor.g = (float)((int)cColorCode) / (float)255;
                             cColorCode -= (int)cColorCode;
 
                             cColorCode *= 1000;
-                            cObjColor.r = (int)cColorCode / 255;
+                            cObjColor.r = (float)((int)cColorCode) / (float)255;
                             cColorCode -= (int)cColorCode;
-                            cInsSpr.color = objColor;
+                            cInsSpr.color = cObjColor;
+
                         }
                     }
                 }

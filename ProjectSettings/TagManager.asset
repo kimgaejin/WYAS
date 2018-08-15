@@ -95,3 +95,6 @@ TagManager:
   - name: PLAYER
     uniqueID: 4276112281
     locked: 0
+  - name: SHADOW
+    uniqueID: 2526851931
+    locked: 0
