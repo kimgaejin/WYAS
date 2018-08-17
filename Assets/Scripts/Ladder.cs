@@ -25,7 +25,7 @@ public class Ladder : ObjectProperty {
 
         canUse = true;
         maxY = transform.position.y + pState.GetSizeY()/2;
-        minY = transform.position.y - bodyLength;
+        minY = transform.position.y - bodyLength - pState.GetSizeY() / 2;
         
         Transform decorationOfTale = transform.GetChild(1);
         decorationOfTale.position = transform.position - new Vector3(0, bodyLength, 0);
@@ -48,7 +48,7 @@ public class Ladder : ObjectProperty {
 
     override public void IsInteracting()
     {
-        if (player.position.y + pState.GetSizeY()/2 > maxY || player.position.y < minY - pState.GetSizeY() / 2)
+        if (player.position.y > maxY || player.position.y < minY )
         {
             StopInteracting();
         }
@@ -95,8 +95,9 @@ public class Ladder : ObjectProperty {
         SpriteRenderer bodySpr = body.gameObject.GetComponent<SpriteRenderer>();
         float bodyLength = bodySpr.bounds.size.y;
 
-        bool playerBeUnderRopePosition = distance.y <= 0;
-        bool playerBeOnRopeLength = distance.y >= -bodyLength;
+        float pSize = pState.GetSizeY();
+        bool playerBeUnderRopePosition = distance.y - pSize/2  <= 0;
+        bool playerBeOnRopeLength = distance.y + pSize/2>= -bodyLength;
 
         if (playerBeOnRopeLength && playerBeUnderRopePosition)
         {

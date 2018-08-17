@@ -11,6 +11,10 @@ public class Lever_moving1 : ObjectProperty {
 
     // References
     SpriteRenderer spr;
+    string onLeverSpName = "레버2";
+    string offLeverSpName = "레버1";
+    Sprite onLeverSp;
+    Sprite offLeverSp;
 
     // Variables
     private float movingSpeed = 1;
@@ -23,7 +27,6 @@ public class Lever_moving1 : ObjectProperty {
     private void Start()
     {
         // handler의 크기입니다. Lever_moving이 아닙니다.
-        
         base.rangeX = 0.7f + spr.bounds.size.x / 2;
         base.mustFaced = true;
 
@@ -34,12 +37,12 @@ public class Lever_moving1 : ObjectProperty {
         movingObject.position = point1.position;
         movingVector = Vector3.Normalize(point1.position-point2.position);
 
+        onLeverSp = Resources.Load<Sprite>("Sprites/" + onLeverSpName);
+        offLeverSp = Resources.Load<Sprite>("Sprites/" + offLeverSpName);
     }
 
     override public void DoInteracting()
     {
-        Debug.Log("레버와의 상호작용");
-
         try
         {
             StopCoroutine(moveToPos);
@@ -49,10 +52,12 @@ public class Lever_moving1 : ObjectProperty {
         if (isOn)
         {
             moveToPos = StartCoroutine(MoveToPoint(point1.position));
+            spr.sprite = offLeverSp;
         }
         else
         {
             moveToPos = StartCoroutine(MoveToPoint(point2.position));
+            spr.sprite = onLeverSp;
         }
 
         isOn = !isOn;
@@ -62,13 +67,16 @@ public class Lever_moving1 : ObjectProperty {
     {
         Vector3 arrow = point1.position - point2.position;
         if (point2.position == point) arrow *= -1;
+        float xpp = arrow.x * movingSpeed * Time.deltaTime;
+        float ypp = arrow.y * movingSpeed * Time.deltaTime;
+
 
         while (true)
         {
-            bool inX = (movingObject.position.x <= point1.position.x && point2.position.x <= movingObject.position.x)
-                || (movingObject.position.x <= point2.position.x && point1.position.x <= movingObject.position.x);
-            bool inY = ((movingObject.position.y <= point1.position.y && point2.position.y <= movingObject.position.y)
-                    || (movingObject.position.y <= point2.position.y && point1.position.y <= movingObject.position.y));
+            bool inX = (movingObject.position.x+ xpp <= point1.position.x && point2.position.x- xpp <= movingObject.position.x)
+                || (movingObject.position.x+ xpp <= point2.position.x && point1.position.x- xpp <= movingObject.position.x);
+            bool inY = ((movingObject.position.y+ ypp <= point1.position.y && point2.position.y- ypp <= movingObject.position.y)
+                    || (movingObject.position.y+ ypp <= point2.position.y && point1.position.y- ypp <= movingObject.position.y));
 
             if (!inX || !inY)
             {

@@ -11,6 +11,7 @@ public class PlayerState : MonoBehaviour {
     private Joystick joystick;
     private Rigidbody2D rigid;
     private SpriteRenderer spr;
+    private Collider2D coll;
 
     private Collider2D curObj;
     private Collider2D adjacentObj;
@@ -69,6 +70,7 @@ public class PlayerState : MonoBehaviour {
 
     private void OnCollisionStay2D(Collision2D other)
     {
+
         bool isGround = (other.gameObject.tag == "GROUND");
         bool isBox = (other.gameObject.tag == "BOX");
 
@@ -365,11 +367,14 @@ public class PlayerState : MonoBehaviour {
         /* CheckColliders() + Interact() 의 기능을 하고있지만
          * 사다리와 밧줄같은, 점프해야만 상호작용 할 수 있는 물체들(Layer:OBJECT_3ST)에게 적용 됨.
          * 점프중이며, 범위내에 있는 밧줄 혹은 사다리에게 바로 실행 됨.
+         * + 위 아래키로도 가능하게 바뀜, 단 조이스틱은 적용 안됐음.
          */
 
         if (curObj == null)
         {
-            if (isJumping == true)
+            if (isJumping == true 
+                || Input.GetKeyDown(KeyCode.W)  // 위 아래 키 추가. 조이스틱은 아님
+                || Input.GetKeyDown(KeyCode.S))
             {
                 int layerMask = (1 << LayerMask.NameToLayer("OBJECT_3ST")); // 밧줄과 사다리
                 Collider2D[] colls = Physics2D.OverlapBoxAll(transform.position, new Vector2(1.0f, Mathf.Infinity), 0.0f, layerMask, 0);
@@ -500,6 +505,7 @@ public class PlayerState : MonoBehaviour {
     {
         rigid = this.gameObject.GetComponent<Rigidbody2D>();
         spr = this.transform.Find("pGraphic").GetComponent<SpriteRenderer>();
+        coll = this.GetComponent<Collider2D>();
         curObj = null;
         isFacedR = true;
     }
