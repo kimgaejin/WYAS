@@ -33,7 +33,19 @@ public class Lever_moving1 : ObjectProperty {
         movingObject = transform.parent.transform.GetChild(1).transform;
         point1 = transform.parent.transform.FindChild("point1").transform;
         point2 = transform.parent.transform.FindChild("point2").transform;
+        try
+        {
+            Color p1C;
+            p1C = point1.gameObject.GetComponent<SpriteRenderer>().color;
+            p1C.a = 0;
+            point1.gameObject.GetComponent<SpriteRenderer>().color = p1C;
 
+            Color p2C;
+            p2C = point2.gameObject.GetComponent<SpriteRenderer>().color;
+            p2C.a = 0;
+            point2.gameObject.GetComponent<SpriteRenderer>().color = p2C;
+        }
+        catch { }
         movingObject.position = point1.position;
         movingVector = Vector3.Normalize(point1.position-point2.position);
 

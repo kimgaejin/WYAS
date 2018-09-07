@@ -98,3 +98,9 @@ TagManager:
   - name: SHADOW
     uniqueID: 2526851931
     locked: 0
+  - name: ImageUI
+    uniqueID: 2131518993
+    locked: 0
+  - name: TextUI
+    uniqueID: 1881074405
+    locked: 0

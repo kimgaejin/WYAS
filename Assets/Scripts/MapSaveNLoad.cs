@@ -4,11 +4,6 @@ using UnityEngine;
 using System.IO;
 using LitJson;
 
-public class PlayerInfo
-{
-
-}
-
 public class ObjectDetailInfo
 {
     public string key;

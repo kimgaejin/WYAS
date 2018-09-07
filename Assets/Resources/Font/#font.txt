@@ -1,0 +1,4 @@
+BMDOHYEON_ttf.ttf 배달의민족_도현체
+BMHANNA_11yrs_ttf.ttf 배달의민족_한나는11살체
+BMJUA_ttf.ttf 배달의민족_주아체
+BMYEONSUNG_ttf.ttf 배달의민족_연성체
