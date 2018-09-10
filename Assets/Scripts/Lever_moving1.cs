@@ -31,8 +31,8 @@ public class Lever_moving1 : ObjectProperty {
         base.mustFaced = true;
 
         movingObject = transform.parent.transform.GetChild(1).transform;
-        point1 = transform.parent.transform.FindChild("point1").transform;
-        point2 = transform.parent.transform.FindChild("point2").transform;
+        point1 = transform.parent.transform.Find("point1").transform;
+        point2 = transform.parent.transform.Find("point2").transform;
         try
         {
             Color p1C;
