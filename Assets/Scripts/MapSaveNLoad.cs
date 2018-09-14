@@ -209,7 +209,7 @@ public class MapSaveNLoad : MonoBehaviour {
             {
                 string categoryName = jsonData["Map"][i]["key"].ToString();
                 Transform tr_object;
-                tr_object = Map.FindChild(categoryName);
+                tr_object = Map.Find(categoryName);
                 if (tr_object == null) tr_object = Map;
 
                 string type = jsonData["Map"][i]["type"].ToString();

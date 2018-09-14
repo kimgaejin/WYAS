@@ -8,7 +8,7 @@ public class FallingPoint : MonoBehaviour {
 
     private void Start()
     {
-        fallingPoint = transform.parent.parent.transform.FindChild("fallingPoint").transform;
+        fallingPoint = transform.parent.parent.transform.Find("fallingPoint").transform;
         Color fallingPointColor;
         fallingPointColor = fallingPoint.gameObject.GetComponent<SpriteRenderer>().color;
         fallingPointColor.a = 0;

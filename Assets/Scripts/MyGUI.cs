@@ -65,21 +65,21 @@ public class MyGUI : MonoBehaviour {
     public void StartGame()
     {
         UiCanvas.SetActive(false);
-        //현재 진행중인 챕터로 가야하는 거 구현해야됨
+        DreamCanvas.SetActive(true);
+           
     }
 
     public void Developer()
     {
-        UnityEngine.Debug.Log("Dream");
-        UiCanvas.SetActive(false);
-        DreamCanvas.SetActive(true);
-        //일단 이버튼을 꿈으로 가는 것으로 해놓음 추후 변경해야됨
+     //아직 추가안함
     }
 
     public void ProgressState()
     {
         UnityEngine.Debug.Log("ProgressState");
         ProgressStatePanel.SetActive(true);
+
+        //일시정지 구현해야함
     }
     public void Chapter1()
     {
