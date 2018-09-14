@@ -4,6 +4,10 @@ using UnityEngine;
 using System.IO;
 using LitJson;
 
+/*
+ * 3중 상속(혹은 이후를 생각하면 그 이후)까지 저장해야합니다.
+ */
+
 public class ObjectDetailInfo
 {
     public string key;
