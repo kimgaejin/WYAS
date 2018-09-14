@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
-public class GUI : MonoBehaviour {
+public class MyGUI : MonoBehaviour {
     public GameObject UiCanvas;
     public GameObject DreamCanvas;
 
@@ -12,7 +12,7 @@ public class GUI : MonoBehaviour {
     public GameObject SetPanel;
     public GameObject Chapter1Panel;
 
-    
+
     public Button GameStartButton;
     public Button DeveloperButton;
     public Button ExitButton;
@@ -47,18 +47,20 @@ public class GUI : MonoBehaviour {
 
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         UiCanvas.SetActive(true);
         DreamCanvas.SetActive(false);
         ProgressStatePanel.SetActive(false);
         SetPanel.SetActive(false);
         Chapter1Panel.SetActive(false);
     }
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
 
     public void StartGame()
     {

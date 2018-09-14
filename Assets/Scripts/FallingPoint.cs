@@ -25,8 +25,10 @@ public class FallingPoint : MonoBehaviour {
         else
         {
             if (collision.tag == "BOX"
-                || collision.tag == "ROCK")
-            Destroy(collision);
+                || collision.tag == "ROCK") {
+
+                collision.gameObject.SetActive(false);
+            }
         }
     } 
 

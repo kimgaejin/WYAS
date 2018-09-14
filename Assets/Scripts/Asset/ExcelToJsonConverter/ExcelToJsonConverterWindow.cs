@@ -43,6 +43,7 @@ public class ExcelToJsonConverterWindow : EditorWindow
 	void OnGUI()
 	{
 		GUILayout.BeginHorizontal();
+        
 
 		GUIContent inputFolderContent = new GUIContent("Input Folder", "Select the folder where the excel files to be processed are located.");
 		EditorGUIUtility.labelWidth = 120.0f;

@@ -28,24 +28,33 @@ public class ObjectProperty : MonoBehaviour {
     
     public virtual bool GetIsInRange()
     {
-        Vector3 distance = player.position - transform.position;
 
-        if (mustFaced == true)
+        try
         {
-            if (   (distance.x <= 0 && pState.GetIsFacedR() == false)
-                || (distance.x >= 0 && pState.GetIsFacedR() == true)  )
+            Vector3 distance = player.position - transform.position;
+
+            if (mustFaced == true)
             {
-                return false;
+                if ((distance.x <= 0 && pState.GetIsFacedR() == false)
+                    || (distance.x >= 0 && pState.GetIsFacedR() == true))
+                {
+                    return false;
+                }
             }
+            if (Mathf.Abs(distance.y) < pState.GetSizeY() / 2 + GetSize().y / 2)
+            {
+                if (Mathf.Abs(distance.x) <= GetRangeX())
+                {
+                    return true;
+                }
+            }
+            return false;
         }
-        if (Mathf.Abs(distance.y) < pState.GetSizeY() / 2 + GetSize().y / 2)
+        catch
         {
-            if (Mathf.Abs(distance.x) <= GetRangeX())
-            {
-                return true;
-            }
+            return false;
+            Debug.Log("GetIsInRange throw!!!!!!");
         }
-        return false;
     }
     
     public Vector2 GetSize()

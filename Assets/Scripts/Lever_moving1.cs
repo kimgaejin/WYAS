@@ -26,6 +26,7 @@ public class Lever_moving1 : ObjectProperty {
 
     private void Start()
     {
+        spr = GetComponent<SpriteRenderer>();
         // handler의 크기입니다. Lever_moving이 아닙니다.
         base.rangeX = 0.7f + spr.bounds.size.x / 2;
         base.mustFaced = true;
@@ -81,7 +82,7 @@ public class Lever_moving1 : ObjectProperty {
         if (point2.position == point) arrow *= -1;
         float xpp = arrow.x * movingSpeed * Time.deltaTime;
         float ypp = arrow.y * movingSpeed * Time.deltaTime;
-
+        
 
         while (true)
         {
@@ -96,7 +97,7 @@ public class Lever_moving1 : ObjectProperty {
                 movingObject.transform.Translate(Vector3.zero, Space.Self);
                 yield break;
             }
-
+            
             movingObject.transform.Translate(arrow* movingSpeed *Time.deltaTime, Space.Self);
             yield return new WaitForSeconds(Time.deltaTime);
         }

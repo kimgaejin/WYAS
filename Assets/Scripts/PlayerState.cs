@@ -284,7 +284,6 @@ public class PlayerState : MonoBehaviour {
             if (isReversed == false) arrow= Vector2.up;
             else arrow = Vector2.down;
 
-           // Debug.Log("호잇짜다!!");
             rigid.AddForce(arrow * jumpPower, ForceMode2D.Impulse);
             isJumping = true;
         }
@@ -295,31 +294,41 @@ public class PlayerState : MonoBehaviour {
         int layerMask = (1 << LayerMask.NameToLayer("OBJECT_1ST"))
                         | (1 << LayerMask.NameToLayer("OBJECT_2ST"))
                         | (1 << LayerMask.NameToLayer("OBJECT_4ST")); // OBJECT_3ST인 밧줄, 사다리는 점프할때만 interact하므로 제외.
+        // NOT PressurePlate
         Collider2D[] colls = Physics2D.OverlapBoxAll(transform.position, new Vector2(2.0f, 10.0f), 0.0f, layerMask, 0);
         adjacentObj = null;
         foreach (Collider2D col in colls)
         {
-            ObjectProperty objState = null;
-            objState = col.GetComponent<ObjectProperty>();
-
-            Vector3 colPoint = col.transform.position;
-
-            if (objState.GetIsInRange() == true)
+            try
             {
-                if (adjacentObj != null)
+                ObjectProperty objState = null;
+                objState = col.GetComponent<ObjectProperty>();
+                if (objState == null) Debug.Log(col.gameObject.name + " has not objState!!!!!");
+
+
+                Vector3 colPoint = col.transform.position;
+
+                if (objState.GetIsInRange() == true)
                 {
-                    // 거리가 더 가까운지 확인.
-                    if (Mathf.Abs(transform.position.x - adjacentObj.transform.position.x)
-                        < Mathf.Abs(transform.position.x - col.transform.position.x))
+                    if (adjacentObj != null)
+                    {
+                        // 거리가 더 가까운지 확인.
+                        if (Mathf.Abs(transform.position.x - adjacentObj.transform.position.x)
+                            < Mathf.Abs(transform.position.x - col.transform.position.x))
+                        {
+                            adjacentObj = col;
+                        }
+                    }
+                    // 인접한 오브젝트가 없었다면 얘가 인접한 오브젝트.
+                    else
                     {
                         adjacentObj = col;
                     }
                 }
-                // 인접한 오브젝트가 없었다면 얘가 인접한 오브젝트.
-                else
-                {
-                    adjacentObj = col;
-                }
+            }
+            catch
+            {
+                Debug.Log("catch in platerState");
             }
 
         }
