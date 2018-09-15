@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PressurePlate : ObjectProperty {
+public class PressurePermanentPlate : ObjectProperty {
 
     private SpriteRenderer spr;
     // Transforms
@@ -60,6 +60,7 @@ public class PressurePlate : ObjectProperty {
         int layerMask = (1 << LayerMask.NameToLayer("PLAYER"))
                         | (1 << LayerMask.NameToLayer("OBJECT_1ST"));
 
+        Debug.Log("transform:position " + transform.position);
         Collider2D[] colls = Physics2D.OverlapBoxAll(transform.position, new Vector2(.5f, .5f), 0.0f, layerMask, 0);
 
         isPushed = false;
@@ -69,7 +70,7 @@ public class PressurePlate : ObjectProperty {
         }
 
         // 새롭게 버튼밟는 상태
-        if (hadPushed == false && isPushed == true)
+        if (isPushed == true)
         {
             try
             {
@@ -81,21 +82,6 @@ public class PressurePlate : ObjectProperty {
             spr.sprite = onPlateSp;
 
         }
-        // 버튼 뗀 상태
-        else if (hadPushed == true && isPushed == false)
-        {
-            try
-            {
-                StopCoroutine(moveToPos);
-            }
-            catch { }
-
-            moveToPos = StartCoroutine(MoveToPoint(point1.position));
-            spr.sprite = offPlateSp;
-        }
-
-        if (isPushed == true) hadPushed = true;
-        else hadPushed = false;
     }
 
     private IEnumerator MoveToPoint(Vector3 point)
@@ -123,5 +109,4 @@ public class PressurePlate : ObjectProperty {
             yield return new WaitForSeconds(Time.deltaTime);
         }
     }
-
 }

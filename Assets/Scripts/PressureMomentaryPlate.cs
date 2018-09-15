@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PressButton : ObjectProperty
-{
+public class PressureMomentaryPlate : ObjectProperty {
+
     private SpriteRenderer spr;
     // Transforms
     private Transform movingObject;
@@ -94,11 +94,10 @@ public class PressButton : ObjectProperty
             spr.sprite = offPlateSp;
         }
 
-        Debug.Log("had, is pushed" + hadPushed + isPushed);
         if (isPushed == true) hadPushed = true;
         else hadPushed = false;
     }
-    
+
     private IEnumerator MoveToPoint(Vector3 point)
     {
         Vector3 arrow = point1.position - point2.position;
@@ -124,5 +123,4 @@ public class PressButton : ObjectProperty
             yield return new WaitForSeconds(Time.deltaTime);
         }
     }
-
 }
