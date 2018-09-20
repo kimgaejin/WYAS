@@ -60,7 +60,7 @@ public class PressurePermanentPlate : ObjectProperty {
         int layerMask = (1 << LayerMask.NameToLayer("PLAYER"))
                         | (1 << LayerMask.NameToLayer("OBJECT_1ST"));
 
-        Debug.Log("transform:position " + transform.position);
+        //Debug.Log("transform:position " + transform.position);
         Collider2D[] colls = Physics2D.OverlapBoxAll(transform.position, new Vector2(.5f, .5f), 0.0f, layerMask, 0);
 
         isPushed = false;
