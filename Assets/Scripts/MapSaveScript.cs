@@ -116,7 +116,7 @@ public class MapSaveScript : MonoBehaviour
                 int i = 0;
                 while (i < 1000)
                 {
-                    ConvertToObjectFormObjectFile(Map.FindChild(jsonData["key"][i]["parentName"].ToString()), null, ConverToObjectFileFromJSON(jsonData["key"][i]));
+                    ConvertToObjectFormObjectFile(Map.Find(jsonData["key"][i]["parentName"].ToString()), null, ConverToObjectFileFromJSON(jsonData["key"][i]));
                     i++;
                 }
                 Debug.Log("로드하는 파일이 1000개를 넘어갑니다.");
