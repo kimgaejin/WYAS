@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEditor;
 
 public class ClearFlag : MonoBehaviour {
 
@@ -32,7 +33,13 @@ public class ClearFlag : MonoBehaviour {
         fadeImg =fade.transform.GetChild(0).GetComponent<Image>();
         if (fadeImg == null) Debug.Log("fadeImg is not exist");
         // ######################################## 지금 몇 챕터인지 받아오는게 필요
-        // currentChapter = 
+        string sceneName = EditorApplication.currentScene;
+        int sceneNameLen = sceneName.Length;
+        sceneName =sceneName.Substring(sceneNameLen - 3, 2);
+        if (int.TryParse(sceneName, out curChapter) == false) {
+            Debug.Log("curChpater: " + curChapter);
+            curChapter = 0;
+        }
         SetClearFlagChild();
         ClearInit();
     }
@@ -95,33 +102,13 @@ public class ClearFlag : MonoBehaviour {
     // EndFlag가 호출합니다.
     {
         // if 클리어 이펙트가 있다면 이곳에
-
-        // 페이드아웃
         try
         {
             StopCoroutine(fadeOut);
         }
         catch { }
+        StartCoroutine(ClearStageCor(stage));
 
-        fadeOut = StartCoroutine(FadeOut(true));
-
-        LevelSave.Stage_Level[curChapter] = stage;
-        PlayerPrefs.SetInt("Stage_Level" + curChapter, LevelSave.Stage_Level[curChapter]);
-
-        // 페이드 아웃 이후
-
-        if (stage == stageLen - 1)
-        {
-            // 다음 챕터로
-        }
-
-        //  플레이어 위치변환
-        playerTrans.position = startList[stage + 1].transform.position;
-
-        // 페이드 인
-        try { StopCoroutine(fadeOut); }
-        catch { }
-        fadeOut = StartCoroutine(FadeOut(false));
     }
 
     IEnumerator FadeOut(bool oper)
@@ -171,6 +158,47 @@ public class ClearFlag : MonoBehaviour {
 
             fadeColor.a = finalColorA;
             fadeImg.color = fadeColor;
+            yield break;
+        }
+    }
+
+    IEnumerator ClearStageCor(int stage)
+    {
+        WaitForSeconds waitFadeIn = new WaitForSeconds(fadeInTime);
+        WaitForSeconds wiatFadeOut = new WaitForSeconds(fadeOutTime);
+
+        while (true)
+        {
+            try
+            {
+                StopCoroutine(fadeOut);
+            }
+            catch { }
+
+            fadeOut = StartCoroutine(FadeOut(true));
+            yield return waitFadeIn;
+
+            LevelSave.Stage_Level[curChapter] = stage;
+            PlayerPrefs.SetInt("Stage_Level" + curChapter, LevelSave.Stage_Level[curChapter]);
+
+            // 페이드 아웃 이후
+
+            if (stage == stageLen - 1)
+            {
+                // 다음 챕터로
+
+                yield break;
+            }
+
+            //  플레이어 위치변환
+            playerTrans.position = startList[stage + 1].transform.position;
+
+            // 페이드 인
+            try { StopCoroutine(fadeOut); }
+            catch { }
+            fadeOut = StartCoroutine(FadeOut(false));
+            yield return wiatFadeOut;
+
             yield break;
         }
     }
