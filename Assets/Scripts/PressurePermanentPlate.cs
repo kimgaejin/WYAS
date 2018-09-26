@@ -32,8 +32,8 @@ public class PressurePermanentPlate : ObjectProperty {
         base.mustFaced = false;
 
         movingObject = transform.GetChild(1).transform;
-        point1 = transform.FindChild("point1").transform;
-        point2 = transform.FindChild("point2").transform;
+        point1 = transform.Find("point1").transform;
+        point2 = transform.Find("point2").transform;
         try
         {
             Color p1C;

@@ -49,11 +49,11 @@ public class ClearFlag : MonoBehaviour {
         startList = new List<Transform>();
         endList = new List<Transform>();
 
-        foreach (Transform item in transform.FindChild("StartPoint"))
+        foreach (Transform item in transform.Find("StartPoint"))
         {
             startList.Add(item);
         }
-        foreach (Transform item in transform.FindChild("EndPoint"))
+        foreach (Transform item in transform.Find("EndPoint"))
         {
             endList.Add(item);
         }
