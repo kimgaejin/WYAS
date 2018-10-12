@@ -11,13 +11,14 @@ public class Box : ObjectProperty {
     private float decelration;
     private float distantErrorValue;
 
-    private Vector3 distant;
+    private Vector3 distant;    // 플레이어-박스 간 x축의 이상적 차이
     private Vector3 heightDifference;
     private Vector3 collPosition;
 
     private void Start()
     {
-        base.rangeX = 1.1f;
+        // 왜 scale이 3일때 transform.getChild(0).GetSpriteRenderer.bounds.size.x -> 4.15가 나올까?
+        base.rangeX = .1f+ (1.0f * transform.localScale.x);
         base.mustFaced = true;
 
         decelration = 0.5f;
@@ -38,20 +39,24 @@ public class Box : ObjectProperty {
         rigid.mass = 1;
 
         player = GameObject.Find("Player").GetComponent<Transform>();
-        distant = new Vector3(base.GetSize().x / 2.0f + pState.GetSizeX() / 2.0f, 0, 0);
+        distant = new Vector3( ( base.GetSize().x + pState.GetSizeX() ) / 2.0f, 0, 0);
 
+        Debug.Log("distant.x  "+ ( base.GetSize().x + pState.GetSizeX() ) / 2.0f);
         bool isPlayerLocatedBoxsRight = player.position.x >= transform.position.x;
         bool isPlayerReversed = pState.GetIsReversed();
 
         heightDifference = new Vector3(0, pState.transform.position.y - transform.position.y);
 
+        Debug.Log("distant: " + distant);
         if (isPlayerLocatedBoxsRight)
         {
-            player.position = transform.position + distant * distantErrorValue + heightDifference;
+            // player.position = transform.position + distant * distantErrorValue + heightDifference;
+            player.position = transform.position + distant + heightDifference;
         }
         else
         {
-            player.position = transform.position - distant * distantErrorValue + heightDifference;
+            //player.position = transform.position - distant * distantErrorValue + heightDifference;
+            player.position = transform.position - distant + heightDifference;
         }
         
         interactingState = true;
@@ -63,54 +68,32 @@ public class Box : ObjectProperty {
 
     override public void IsInteracting()
     {
-        /*
-        if (Mathf.Abs(pState.GetVerticalSpeed()) > 0.1f)
-        {
-            Debug.Log("Player y Spped < 0 -> stop : " + pState.GetVerticalSpeed());
-            StopInteracting();
-        }
-        else if ( Mathf.Abs(rigid.velocity.y) > 0.1f)
-        {
-            Debug.Log("Box y Spped < 0 -> stop");
-            StopInteracting();
-        }
-        */
-        float pX = player.transform.position.x;
-        float pY = player.transform.position.y;
-        float bX = transform.position.x;
-        float bY = transform.position.y;
-        bool soFarBox = Mathf.Abs( (pX - bX)*(pX - bX)+(pY - bY)*(pY - bY)) >= 2.0f;
-        if (soFarBox) {
-            Debug.Log("soFarBox");
-            StopInteracting();
-        }
-        else
-        {
-            Vector2 distance2d = new Vector2(pX - bX, pY - bY);
-            float distantX = transform.position.x - player.transform.position.x;
-            if (Mathf.Abs(distantX)
-                > (GetSize().x / 2 + pState.GetSizeX() / 2) * distantErrorValue)
-            {
-                if (Input.GetKey(KeyCode.D))
-                    //rigid.AddForce(distance2d * 100, ForceMode2D.Force);
-                    rigid.transform.Translate(Vector2.right * horizonSpeedSave * decelration * Time.deltaTime);
+        // if 멀면 리턴
+        // else 아니면 이동
 
-                if (Input.GetKey(KeyCode.A))
-                    //rigid.AddForce(distance2d * 100, ForceMode2D.Force);
-                    rigid.transform.Translate(Vector2.left * horizonSpeedSave * decelration * Time.deltaTime);
-            }
-            else
-            {
-                if (distantX > 0)
-                {
-                    transform.position += -distant * (1 - distantErrorValue) / 2;
-                }
-                else
-                {
-                    transform.position += distant * (1 - distantErrorValue) / 2;
-                }
-            }
+        bool isCloseWithPlayerX = Mathf.Abs(player.transform.position.x- this.transform.position.x) - ((pState.GetSizeX()+base.GetSize().x)/2.0f)< .2;
+        if (!isCloseWithPlayerX)
+        {
+            Debug.Log("상자와의 X축 거리가 너무 멉니다.");
+            StopInteracting();
+            return;
         }
+
+        bool isCloseWithPlayerY = Mathf.Abs(player.transform.position.y - this.transform.position.y)  < .5;
+        Debug.Log("Y차이 :"+Mathf.Abs(player.transform.position.y - this.transform.position.y));
+        if (!isCloseWithPlayerY)
+        {
+            Debug.Log("상자와의 Y축 거리가 너무 멉니다.");
+            StopInteracting();
+            return;
+        }
+
+        if (Input.GetKey(KeyCode.D))
+            rigid.transform.Translate(Vector2.right * horizonSpeedSave * decelration * Time.deltaTime);
+
+        if (Input.GetKey(KeyCode.A))
+            rigid.transform.Translate(Vector2.left * horizonSpeedSave * decelration * Time.deltaTime);
+
     }
 
     override public void StopInteracting()
@@ -120,6 +103,20 @@ public class Box : ObjectProperty {
         pState.makeHorizonspeed(horizonSpeedSave);
         interactingState = false;
         rigid.mass = 100;
+    }
+
+    override public void SetSize()
+    {
+        try
+        {
+            size = transform.localScale;
+        }
+        catch
+        {
+            //Debug.Log(transform.name.ToString() + "의 자식의 SpriteRenderer를 ObjectProperty에서 찾지 못함.");
+            size = Vector2.zero;
+        }
+
     }
 
     private void AdjustBalance()

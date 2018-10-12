@@ -50,20 +50,20 @@ public class PlayerState : MonoBehaviour {
 
     private void Awake()
     {
+       
         InitializedSetting();
         InitializeBitSwitch();
         InitializeComponent();
         InitializeKeypad();
+
     }
-    
+
     private void Update()
     {
         AdjustBalance();
         ResetVelocityX();
         Move();
-        Jump();
         CheckColliders();
-        Interact();
         InteractWithJumping();
         LimitVelocityY();
     }
@@ -238,55 +238,41 @@ public class PlayerState : MonoBehaviour {
 
     private void Move()
     {
-        if (isFixed == true) {
-            rigid.velocity = Vector2.zero;
-            rigid.position = fixedPoint;
-            return;
-        }
         if (canMove == false) return;
 
-        //horizon = joystick.GetHorizontalValue();  // 조이스틱용
-        //vertical = joystick.VerticaltalValue();  // 조이스틱용
-        // 키보드용
-
+        // 키보드 전용
+        /*
         if (Input.GetKey(KeyCode.A)) horizon = -1.0f;
         else if (Input.GetKey(KeyCode.D)) horizon = 1.0f;
         else  horizon = 0;
-
+        
         if (Input.GetKey(KeyCode.W)) vertical = 1.0f;
         else if (Input.GetKey(KeyCode.S)) vertical = -1.0f;
         else vertical = 0;
+        */
 
+        // 조이스틱 전용
+        horizon = joystick.GetHorizontalValue();
+        vertical = joystick.GetVerticalValue();
+        
         transform.Translate(Vector3.right * horizonSpeed * horizon * Time.deltaTime);
 
         if (horizon > 0) isFacedR = true;
         else if (horizon < 0) isFacedR = false;
-
-        fixedPoint = this.transform.position;
     }
 
-    private void Jump()
+    public void Jump()
     {
-        //Debug.Log("is/can: " + isJumping + canJump); 
-
         if (isJumping == true) return;
         if (canJump == false) return;
 
-        //bool isTouchingJump = false;
-        //if (GetStateJumpImg() == true)    // 터치패널용
-        // 키보드용
+        Vector2 arrow;
+        if (isReversed == false) arrow= Vector2.up;
+        else arrow = Vector2.down;
 
-        //Debug.Log("isJ:" + isJumping + " rev:" + isReversed);
-
-        if (Input.GetKey(KeyCode.J))
-        {
-            Vector2 arrow;
-            if (isReversed == false) arrow= Vector2.up;
-            else arrow = Vector2.down;
-
-            rigid.AddForce(arrow * jumpPower, ForceMode2D.Impulse);
-            isJumping = true;
-        }
+        rigid.AddForce(arrow * jumpPower, ForceMode2D.Impulse);
+        isJumping = true;
+        
     }
 
     private void CheckColliders()
@@ -334,7 +320,7 @@ public class PlayerState : MonoBehaviour {
         }
     }
 
-    private void Interact()
+    public void Interact()
     {
         // 이미 curObj가 연결되어있는 경우, 상호작용 실행
         if (curObj != null)
@@ -352,23 +338,23 @@ public class PlayerState : MonoBehaviour {
             }
         }
 
-        // 상호작용 키를 눌렀을 때
-        if (Input.GetKeyDown(KeyCode.K)) {
-            // curObj가 연결되어있다면, 상호작용 실행, 아니라면 curObj로 설정.
-            if (curObj != null)
-            {
-                curObjAct.StopInteracting();
-                curObj = null;
-                curObjAct = null;
-            }
-            else
-            {
-                if (adjacentObj == null) return;
-                curObj = adjacentObj;
-                curObjAct = curObj.GetComponent<ObjectProperty>();
-                curObjAct.DoInteracting();
-            }
+
+        // curObj가 연결되어있다면, 상호작용 실행, 아니라면 curObj로 설정.
+        if (curObj != null)
+        {
+            curObjAct.StopInteracting();
+            curObj = null;
+            curObjAct = null;
         }
+        else
+        {
+            if (adjacentObj == null) return;
+            curObj = adjacentObj;
+            curObjAct = curObj.GetComponent<ObjectProperty>();
+            curObjAct.DoInteracting();
+        }
+
+        
     }
 
     private void InteractWithJumping()

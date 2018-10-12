@@ -26,11 +26,7 @@ public class ClearFlag : MonoBehaviour {
     {
         playerTrans = GameObject.Find("Player").transform;
         fade = GameObject.Find("Fade");
-        if (fade == null)
-        {
-            fade = GameObject.Find("ScreenSpaceEffectCanvas").transform.GetChild(0).gameObject;
-        }
-        fadeImg =fade.transform.GetChild(0).GetComponent<Image>();
+        if (fade) fadeImg =fade.transform.GetChild(0).GetComponent<Image>();
         if (fadeImg == null) Debug.Log("fadeImg is not exist");
         // ######################################## 지금 몇 챕터인지 받아오는게 필요
         string sceneName = EditorApplication.currentScene;
@@ -87,7 +83,9 @@ public class ClearFlag : MonoBehaviour {
                 StopCoroutine(fadeOut);
             }
             catch { }
-            fadeOut = StartCoroutine(FadeOut(false));
+
+            if (fade != null) 
+                fadeOut = StartCoroutine(FadeOut(false));
 
             LevelSave.Stage_Level[curChapter] = 0;
             PlayerPrefs.SetInt("Stage_Level" + curChapter, LevelSave.Stage_Level[curChapter]);
@@ -135,7 +133,16 @@ public class ClearFlag : MonoBehaviour {
         }
         inc = (fadeTime * 40)/255.0f;
 
-        Color fadeColor = fadeImg.color;
+        Color fadeColor;
+        // fadeImg가 없으면 페이드인, 아웃을 진행하지않고 생략
+        try
+        {
+            fadeColor = fadeImg.color;
+        }
+        catch
+        {
+            yield break;
+        }
 
         while (true)
         {

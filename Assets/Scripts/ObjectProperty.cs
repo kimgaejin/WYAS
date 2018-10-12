@@ -99,5 +99,5 @@ public class ObjectProperty : MonoBehaviour {
             size = Vector2.zero;
         }
 
-        }
+    }
 }
