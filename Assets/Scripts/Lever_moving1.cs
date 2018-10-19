@@ -33,7 +33,7 @@ public class Lever_moving1 : ObjectProperty {
 
         // [link the movingObjects and p1, p2]
         Transform movingObjectsParent;
-        movingObjectsParent = transform.parent.FindChild("movingObjects");
+        movingObjectsParent = transform.parent.Find("movingObjects");
         movingCount = movingObjectsParent.childCount;
         movingObjectArray = new Transform[movingCount];
         for (int i = 0; i < movingCount; i++)
@@ -45,8 +45,8 @@ public class Lever_moving1 : ObjectProperty {
         int point2Count;
         Transform point1Parent;
         Transform point2Parent;
-        point1Parent = transform.parent.FindChild("point1Parent");
-        point2Parent = transform.parent.FindChild("point2Parent");
+        point1Parent = transform.parent.Find("point1Parent");
+        point2Parent = transform.parent.Find("point2Parent");
         point1Count = point1Parent.childCount;
         point2Count = point2Parent.childCount;
 

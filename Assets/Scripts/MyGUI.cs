@@ -22,6 +22,9 @@ public class MyGUI : MonoBehaviour {
     public Button SetStateButton;
     //DreamCanvas
 
+    public Button Chapter_Left;
+    public Button Chapter_Right;
+
     public Button Chapter1Button;
     public Button Chapter2Button;
     public Button Chapter3Button;
@@ -81,6 +84,21 @@ public class MyGUI : MonoBehaviour {
 
         //일시정지 구현해야함
     }
+
+    public void ChapterLeft()
+    {
+        UnityEngine.Debug.Log("ChapterLeft");
+        //챕터 6이후 부재로 아직미구현
+    
+    }
+
+    public void ChapterRight()
+    {
+        UnityEngine.Debug.Log("ChapterRight");
+        //챕터 6이후 부재로 아직미구현
+
+    }
+
     public void Chapter1()
     {
         UnityEngine.Debug.Log("1");
