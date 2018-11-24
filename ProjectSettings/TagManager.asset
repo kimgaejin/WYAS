@@ -92,8 +92,14 @@ TagManager:
   - name: OBJECT_1ST_FRONT
     uniqueID: 2334999469
     locked: 0
+  - name: PLAYERSUB_BACK
+    uniqueID: 2862508117
+    locked: 0
   - name: PLAYER
     uniqueID: 4276112281
+    locked: 0
+  - name: PLAYERSUB_FRONT
+    uniqueID: 1774913577
     locked: 0
   - name: SHADOW
     uniqueID: 2526851931

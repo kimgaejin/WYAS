@@ -34,7 +34,7 @@ public class EndFlag : MonoBehaviour {
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        Debug.Log("충돌");
+        //Debug.Log("충돌");
         if (other.transform.tag == "PLAYER")
         {
             ReachThisPoint();
@@ -51,7 +51,7 @@ public class EndFlag : MonoBehaviour {
         if (isThrough == true)
             return;
 
-        Debug.Log("알려도라");
+        //Debug.Log("알려도라");
         clearFlag.ClaerStage(stage);
         isThrough = true;
     }

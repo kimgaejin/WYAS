@@ -1,0 +1,405 @@
+fileFormatVersion: 2
+guid: 10a863ffdc737a343beb72ec8c4add25
+timeCreated: 1542359938
+licenseType: Free
+TextureImporter:
+  fileIDToRecycleName:
+    21300000: playerGHP_0
+    21300002: playerGHP_1
+    21300004: playerGHP_2
+    21300006: playerGHP_3
+    21300008: playerGHP_4
+    21300010: playerGHP_5
+    21300012: playerGHP_6
+    21300014: playerGHP_7
+    21300016: playerGHP_8
+    21300018: playerGHP_9
+    21300020: playerGHP_10
+    21300022: playerGHP_11
+    21300024: playerGHP_12
+    21300026: playerGHP_13
+    21300028: playerGHP_14
+    21300030: playerGHP_15
+    21300032: playerGHP_16
+    21300034: playerGHP_17
+    21300036: playerGHP_18
+    21300038: playerGHP_19
+    21300040: playerGHP_20
+  serializedVersion: 4
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+  isReadable: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: -1
+    aniso: -1
+    mipBias: -1
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spritePixelsToUnits: 200
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  platformSettings:
+  - buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: Standalone
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  - buildTarget: Android
+    maxTextureSize: 2048
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: playerGHP_0
+      rect:
+        serializedVersion: 2
+        x: 106
+        y: 579
+        width: 105
+        height: 98
+      alignment: 9
+      pivot: {x: 0.48448268, y: 0.2506147}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: playerGHP_1
+      rect:
+        serializedVersion: 2
+        x: 222
+        y: 564
+        width: 60
+        height: 47
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: playerGHP_2
+      rect:
+        serializedVersion: 2
+        x: 155
+        y: 542
+        width: 27
+        height: 29
+      alignment: 9
+      pivot: {x: 0.48793086, y: 0.5561818}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: playerGHP_3
+      rect:
+        serializedVersion: 2
+        x: 289
+        y: 482
+        width: 39
+        height: 64
+      alignment: 9
+      pivot: {x: 0.33517298, y: 0.8013239}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: playerGHP_4
+      rect:
+        serializedVersion: 2
+        x: 99
+        y: 471
+        width: 31
+        height: 60
+      alignment: 9
+      pivot: {x: 0.6371659, y: 0.8543457}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: playerGHP_5
+      rect:
+        serializedVersion: 2
+        x: 162
+        y: 414
+        width: 98
+        height: 121
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: playerGHP_6
+      rect:
+        serializedVersion: 2
+        x: 67
+        y: 368
+        width: 56
+        height: 66
+      alignment: 9
+      pivot: {x: 0.7060991, y: 0.79452145}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: playerGHP_7
+      rect:
+        serializedVersion: 2
+        x: 178
+        y: 363
+        width: 65
+        height: 48
+      alignment: 9
+      pivot: {x: 0.55607253, y: 0.56327564}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: playerGHP_8
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 402
+        width: 37
+        height: 68
+      alignment: 9
+      pivot: {x: 0.48553878, y: 0.8068879}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: playerGHP_9
+      rect:
+        serializedVersion: 2
+        x: 33
+        y: 304
+        width: 39
+        height: 50
+      alignment: 9
+      pivot: {x: 0.73363465, y: 0.8766193}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: playerGHP_10
+      rect:
+        serializedVersion: 2
+        x: 141
+        y: 274
+        width: 50
+        height: 91
+      alignment: 9
+      pivot: {x: 0.6700857, y: 0.89384145}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: playerGHP_11
+      rect:
+        serializedVersion: 2
+        x: 239
+        y: 267
+        width: 64
+        height: 95
+      alignment: 9
+      pivot: {x: 0.2722063, y: 0.94759524}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: playerGHP_12
+      rect:
+        serializedVersion: 2
+        x: 298
+        y: 334
+        width: 44
+        height: 50
+      alignment: 9
+      pivot: {x: 0.56902796, y: 0.90091735}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: playerGHP_13
+      rect:
+        serializedVersion: 2
+        x: 112
+        y: 167
+        width: 56
+        height: 99
+      alignment: 9
+      pivot: {x: 0.6844044, y: 0.8926951}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: playerGHP_14
+      rect:
+        serializedVersion: 2
+        x: 286
+        y: 180
+        width: 82
+        height: 81
+      alignment: 9
+      pivot: {x: 0.18886659, y: 0.83747226}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: playerGHP_15
+      rect:
+        serializedVersion: 2
+        x: 131
+        y: 85
+        width: 84
+        height: 57
+      alignment: 9
+      pivot: {x: 0.7303134, y: 0.6555626}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: playerGHP_16
+      rect:
+        serializedVersion: 2
+        x: 242
+        y: 81
+        width: 84
+        height: 60
+      alignment: 9
+      pivot: {x: 0.7111206, y: 0.70152396}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: playerGHP_17
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 30
+        width: 30
+        height: 30
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: playerGHP_18
+      rect:
+        serializedVersion: 2
+        x: 107
+        y: 33
+        width: 29
+        height: 29
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: playerGHP_19
+      rect:
+        serializedVersion: 2
+        x: 168
+        y: 26
+        width: 36
+        height: 34
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: playerGHP_20
+      rect:
+        serializedVersion: 2
+        x: 261
+        y: 24
+        width: 40
+        height: 36
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+    outline: []
+    physicsShape: []
+  spritePackingTag: 
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

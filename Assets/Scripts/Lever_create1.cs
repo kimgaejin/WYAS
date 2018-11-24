@@ -8,7 +8,7 @@ using UnityEngine;
  */
 public class Lever_create1 : ObjectProperty
 {
-
+    private Animator leverAnimator;
     // Transforms
     private Transform dropObjectParent;
     private Transform pointParent;
@@ -29,6 +29,7 @@ public class Lever_create1 : ObjectProperty
     private void Start()
     {
         spr = GetComponent<SpriteRenderer>();
+        leverAnimator = GetComponent<Animator>();
 
         // handler의 크기입니다. Lever_moving이 아닙니다.
         base.rangeX = 0.7f + spr.bounds.size.x / 2;
@@ -71,7 +72,8 @@ public class Lever_create1 : ObjectProperty
         // on -> off
         if (isOn)
         {
-            spr.sprite = offLeverSp;
+            leverAnimator.SetBool("isLeft", false);
+            //spr.sprite = offLeverSp;
         }
         // off -> on
         else
@@ -103,7 +105,8 @@ public class Lever_create1 : ObjectProperty
                 }
             }
             catch { }
-            spr.sprite = onLeverSp;
+            leverAnimator.SetBool("isLeft", true);
+            //spr.sprite = onLeverSp;
         }
 
         isOn = !isOn;

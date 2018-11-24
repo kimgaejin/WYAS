@@ -10,6 +10,7 @@ public class PressureMomentaryPlate : ObjectProperty {
     private Transform point1;
     private Transform point2;
 
+    private Animator plateAnimator;
     private Sprite onPlateSp;
     private Sprite offPlateSp;
     private string offPlateSpName = "pressurePlate1";
@@ -27,6 +28,7 @@ public class PressureMomentaryPlate : ObjectProperty {
     void Start()
     {
         spr = transform.GetChild(0).GetComponent<SpriteRenderer>();
+        plateAnimator = transform.GetChild(0).GetComponent<Animator>();
 
         base.rangeX = spr.bounds.size.x / 2;
         base.mustFaced = false;
@@ -78,7 +80,8 @@ public class PressureMomentaryPlate : ObjectProperty {
             catch { }
 
             moveToPos = StartCoroutine(MoveToPoint(point2.position));
-            spr.sprite = onPlateSp;
+            plateAnimator.SetBool("isPressed", true);
+            //spr.sprite = onPlateSp;
 
         }
         // 버튼 뗀 상태
@@ -91,7 +94,8 @@ public class PressureMomentaryPlate : ObjectProperty {
             catch { }
 
             moveToPos = StartCoroutine(MoveToPoint(point1.position));
-            spr.sprite = offPlateSp;
+            plateAnimator.SetBool("isPressed", false);
+            //spr.sprite = offPlateSp;
         }
 
         if (isPushed == true) hadPushed = true;

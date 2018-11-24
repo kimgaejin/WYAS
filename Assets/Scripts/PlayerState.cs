@@ -11,6 +11,7 @@ public class PlayerState : MonoBehaviour {
     private Joystick joystick;
     private Rigidbody2D rigid;
     private SpriteRenderer spr;
+    private Animator anim;
     private Collider2D coll;
 
     private Collider2D curObj;
@@ -24,6 +25,9 @@ public class PlayerState : MonoBehaviour {
     private float vertical;
     private bool isFacedR;
     private bool isReversed;
+    private Vector3 scaleLeft = new Vector3(1, 1, 1);
+    private Vector3 scaleRight = new Vector3(-1, 1, 1);
+
 
     // save
     private Vector3 fixedPoint = Vector3.zero;
@@ -55,7 +59,6 @@ public class PlayerState : MonoBehaviour {
         InitializeBitSwitch();
         InitializeComponent();
         InitializeKeypad();
-
     }
 
     private void Update()
@@ -63,8 +66,13 @@ public class PlayerState : MonoBehaviour {
         AdjustBalance();
         ResetVelocityX();
         Move();
+        keyboardInteract();
+        keyboardJump();
+        
         CheckColliders();
         InteractWithJumping();
+        KeepInteracting();
+        
         LimitVelocityY();
     }
 
@@ -157,6 +165,7 @@ public class PlayerState : MonoBehaviour {
                 {
                     //Debug.Log("Clear");
                     isJumping = false;
+                    anim.SetBool("isFlying", false);
                 }
             }
 
@@ -164,75 +173,6 @@ public class PlayerState : MonoBehaviour {
         
     }
 
-    // =====================[외부 스크립트에서 참조용 함수]
-
-    public void makeMove(bool flag)
-    {
-        if (flag == true) canMove = true;
-        else canMove = false;
-    }
-
-    public void makeJump(bool flag)
-    {
-        if (flag == true) canJump = true;
-        else canJump = false;
-    }
-
-    public void makeIsJumping(bool flag)
-    {
-        isJumping = flag;
-    }
-
-    public void makeHorizonspeed(float in_horizonSpeed = 0.05f)
-    {
-        horizonSpeed = in_horizonSpeed;
-    }
-
-    public void makeResetSpeed()
-    {
-        rigid.velocity = Vector2.zero;
-    }
-
-    public bool GetIsJumping()
-    {
-        return isJumping;
-    }
-
-    public bool GetIsFacedR()
-    {
-        return isFacedR;
-    }
-
-    public float GetSizeX()
-    {
-        return spr.bounds.size.x;
-    }
-
-    public float GetSizeY()
-    {
-        return spr.bounds.size.y;
-    }
-
-    public float GetVerticalSpeed()
-    {
-        return rigid.velocity.y;
-    }
-
-    public float GetHorizonSpeed()
-    {
-        return horizonSpeed;
-    }
-
-    public bool GetIsReversed()
-    {
-        return isReversed;
-    }
-
-    public void MakeIsReversed(bool type)
-    {
-        RotatePlayerGPH(type);
-        isReversed = type;
-    }
 
     // =====================[이 스크립트에서 참조용 함수]
 
@@ -241,26 +181,48 @@ public class PlayerState : MonoBehaviour {
         if (canMove == false) return;
 
         // 키보드 전용
-        /*
-        if (Input.GetKey(KeyCode.A)) horizon = -1.0f;
-        else if (Input.GetKey(KeyCode.D)) horizon = 1.0f;
-        else  horizon = 0;
+
+        float keyboardHorizon = 0;
+        float keyboardVertical = 0;
+
+        if (Input.GetKey(KeyCode.A)) keyboardHorizon = -1.0f;
+        else if (Input.GetKey(KeyCode.D)) keyboardHorizon = 1.0f;
+        else keyboardHorizon = 0;
         
-        if (Input.GetKey(KeyCode.W)) vertical = 1.0f;
-        else if (Input.GetKey(KeyCode.S)) vertical = -1.0f;
-        else vertical = 0;
-        */
+        if (Input.GetKey(KeyCode.W)) keyboardVertical = 1.0f;
+        else if (Input.GetKey(KeyCode.S)) keyboardVertical = -1.0f;
+        else keyboardVertical = 0;
+        
 
         // 조이스틱 전용
         horizon = joystick.GetHorizontalValue();
         vertical = joystick.GetVerticalValue();
-        
+
+        transform.Translate(Vector3.right * horizonSpeed * keyboardHorizon * Time.deltaTime);
         transform.Translate(Vector3.right * horizonSpeed * horizon * Time.deltaTime);
 
-        if (horizon > 0) isFacedR = true;
-        else if (horizon < 0) isFacedR = false;
+        if (horizon > 0 || keyboardHorizon > 0)
+        {
+            isFacedR = true;
+            transform.transform.localScale = scaleRight;
+            anim.SetBool("isWalking", true);
+        }
+        else if (horizon < 0 || keyboardHorizon < 0)
+        {
+            isFacedR = false;
+            transform.transform.localScale = scaleLeft;
+            anim.SetBool("isWalking", true);
+        }
+        else
+        {
+            anim.SetBool("isWalking", false);
+        }
     }
 
+    
+    // 2018-11-24 애니메이션 넣기 이전 점프입니다.
+    // 애니메이션을 추가한 이후로 점프에 선 딜레이가 존재해야 하기에 코루틴으로 수정했습니다.
+    // 점프에서 도움닫기 애니메이션을 없애면서 다시 이 함수로 수정했습니다.
     public void Jump()
     {
         if (isJumping == true) return;
@@ -272,14 +234,65 @@ public class PlayerState : MonoBehaviour {
 
         rigid.AddForce(arrow * jumpPower, ForceMode2D.Impulse);
         isJumping = true;
-        
+        anim.SetTrigger("doJumping");
+        anim.SetBool("isFlying", true);
+
     }
+
+    private void keyboardJump()
+    {
+
+        if (Input.GetKeyDown(KeyCode.J))
+        {
+            Jump();
+            //StartCoroutine("CorJump");
+        }
+    }
+
+    /*
+     * 점프 함수를 코루틴으로 수정했으나, 도움닫기가 사라졌기에 즉발형식으로 바꾸면서 그냥 함수로 롤백했습니다.
+    public void Jump()
+    {
+        StartCoroutine("CorJump");
+    }
+
+    IEnumerator CorJump()
+    {
+        float jumpFrontDelay = 0.5f;    // 점프의 선 딜레이
+        WaitForSeconds wait01 = new WaitForSeconds(0.1f);
+
+
+        while (true)
+        {
+            if (isJumping == true) yield break;
+            if (canJump == false) yield break;
+
+            anim.SetTrigger("doJumping");
+            anim.SetBool("isFlying", true);
+            anim.SetBool("actionPreJump", true);
+
+            for (int i = 0; i < jumpFrontDelay * 10; i++)
+            {
+                yield return wait01;
+            }
+
+            anim.SetBool("actionPreJump", false);
+            rigid.AddForce(Vector2.up * jumpPower, ForceMode2D.Impulse);
+            isJumping = true;
+            
+        }
+    }
+    */
 
     private void CheckColliders()
     {
         int layerMask = (1 << LayerMask.NameToLayer("OBJECT_1ST"))
                         | (1 << LayerMask.NameToLayer("OBJECT_2ST"))
                         | (1 << LayerMask.NameToLayer("OBJECT_4ST")); // OBJECT_3ST인 밧줄, 사다리는 점프할때만 interact하므로 제외.
+
+        // 이미 상호작용중인 오브젝트가 있다면, 리턴
+        if (curObj) return;
+
         // NOT PressurePlate
         Collider2D[] colls = Physics2D.OverlapBoxAll(transform.position, new Vector2(2.0f, 10.0f), 0.0f, layerMask, 0);
         adjacentObj = null;
@@ -320,12 +333,12 @@ public class PlayerState : MonoBehaviour {
         }
     }
 
-    public void Interact()
+    private void KeepInteracting()
     {
-        // 이미 curObj가 연결되어있는 경우, 상호작용 실행
-        if (curObj != null)
+        if (isInteracting == true)
         {
-            if (curObjAct == null) curObjAct = curObj.GetComponent<ObjectProperty>();
+            if (curObj == null) return;
+
             if (curObjAct.GetInterctingState() == false)
             {
                 curObjAct.StopInteracting();
@@ -337,23 +350,43 @@ public class PlayerState : MonoBehaviour {
                 curObjAct.IsInteracting();
             }
         }
+    }
 
+    private void keyboardInteract()
+    {
+        if (Input.GetKeyDown(KeyCode.K))
+            Interact();
+    }
 
-        // curObj가 연결되어있다면, 상호작용 실행, 아니라면 curObj로 설정.
-        if (curObj != null)
+    public void Interact()
+    {
+        // 이미 연결중인 상호작용 물체가 있는경우
+        if (curObj)
         {
+            // ObjectProperty가 넣어주기
+            if (curObjAct == null) curObjAct = curObj.GetComponent<ObjectProperty>();
+
+            isInteracting = false;
             curObjAct.StopInteracting();
             curObj = null;
             curObjAct = null;
+
+            isInteracting = false;
         }
+        // 연결중인 상호작용 물체가 없던경우
         else
         {
-            if (adjacentObj == null) return;
-            curObj = adjacentObj;
-            curObjAct = curObj.GetComponent<ObjectProperty>();
-            curObjAct.DoInteracting();
-        }
+            // 인접한 오브젝트가 있는경우에만 플레이어와 링크해준다.
+            if (adjacentObj)
+            {
+                curObj = adjacentObj;
+                curObjAct = curObj.GetComponent<ObjectProperty>();
+                isInteracting = true;
 
+                Debug.Log("이거냐? 시부렁태앙");
+                curObjAct.DoInteracting();
+            }
+        }
         
     }
 
@@ -365,18 +398,28 @@ public class PlayerState : MonoBehaviour {
          * + 위 아래키로도 가능하게 바뀜, 단 조이스틱은 적용 안됐음.
          */
 
+        float keyboardVertical = 0;
+
+        if (Input.GetKey(KeyCode.W)) keyboardVertical = 1.0f;
+        else if (Input.GetKey(KeyCode.S)) keyboardVertical = -1.0f;
+        else keyboardVertical = 0;
+
+        vertical = joystick.GetVerticalValue();
+
         if (curObj == null)
         {
             if (isJumping == true 
-                || Input.GetKeyDown(KeyCode.W)  // 위 아래 키 추가. 조이스틱은 아님
-                || Input.GetKeyDown(KeyCode.S))
+                || keyboardVertical != 0
+                || vertical != 0)
             {
                 int layerMask = (1 << LayerMask.NameToLayer("OBJECT_3ST")); // 밧줄과 사다리
+               // int layerMask = (1 << 17 );
                 Collider2D[] colls = Physics2D.OverlapBoxAll(transform.position, new Vector2(1.0f, Mathf.Infinity), 0.0f, layerMask, 0);
                
                 Collider2D adjacentCol = null;
                 foreach (Collider2D col in colls)
                 {
+                    Debug.Log("소개합니다: " + col.name);
                     ObjectProperty colState = col.GetComponent<ObjectProperty>();
                     if (colState.GetIsInRange() == true)
                     {
@@ -395,12 +438,14 @@ public class PlayerState : MonoBehaviour {
                     }
                 }
 
-                if (adjacentCol != null)
+                if (adjacentCol)
                 {
                     curObj = adjacentCol;
-                    curObjAct = adjacentCol.GetComponent<ObjectProperty>();
+                    curObjAct = curObj.GetComponent<ObjectProperty>();
+                    isInteracting = true;
+
                     curObjAct.DoInteracting();
-                }
+                } 
 
             }
         }
@@ -499,7 +544,9 @@ public class PlayerState : MonoBehaviour {
     private void InitializeComponent()
     {
         rigid = this.gameObject.GetComponent<Rigidbody2D>();
-        spr = this.transform.Find("pGraphic").GetComponent<SpriteRenderer>();
+        // pGraphic 이엿음
+        spr = this.transform.Find("playerGHP").GetComponent<SpriteRenderer>();
+        anim = this.transform.Find("playerGHP").GetComponent<Animator>();
         coll = this.GetComponent<Collider2D>();
         curObj = null;
         isFacedR = true;
@@ -528,6 +575,92 @@ public class PlayerState : MonoBehaviour {
             transform.Rotate(0,0,deg);
             yield return wait005;
         }
+    }
+
+
+    // =====================[외부 스크립트에서 참조용 함수]
+
+    public void makeMove(bool flag)
+    {
+        if (flag == true) canMove = true;
+        else canMove = false;
+    }
+
+    public void makeJump(bool flag)
+    {
+        if (flag == true) canJump = true;
+        else canJump = false;
+    }
+
+    public void makeIsJumping(bool flag)
+    {
+        isJumping = flag;
+    }
+
+    public void makeHorizonspeed(float in_horizonSpeed = 0.05f)
+    {
+        horizonSpeed = in_horizonSpeed;
+    }
+
+    public void makeResetSpeed()
+    {
+        rigid.velocity = Vector2.zero;
+    }
+
+    public bool GetIsJumping()
+    {
+        return isJumping;
+    }
+
+    public bool GetIsFacedR()
+    {
+        return isFacedR;
+    }
+
+    public float GetSizeX()
+    {
+        return spr.bounds.size.x;
+    }
+
+    public float GetSizeY()
+    {
+        return spr.bounds.size.y;
+    }
+
+    public float GetVerticalSpeed()
+    {
+        return rigid.velocity.y;
+    }
+
+    public float GetHorizonSpeed()
+    {
+        return horizonSpeed;
+    }
+
+    public bool GetIsReversed()
+    {
+        return isReversed;
+    }
+
+    public void MakeIsReversed(bool type)
+    {
+        RotatePlayerGPH(type);
+        isReversed = type;
+    }
+
+    public void SetPlayerAmimationBool(string setting, bool value)
+    {
+        anim.SetBool(setting, value);
+    }
+
+    public float GetHorizon()
+    {
+        return joystick.GetHorizontalValue();
+    }
+
+    public float GetVertical()
+    {
+        return joystick.GetVerticalValue();
     }
 
 }

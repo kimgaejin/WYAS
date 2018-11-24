@@ -8,6 +8,7 @@ public class Lever_moving1 : ObjectProperty {
     private Transform[] movingObjectArray;
     private Transform[] startPoint;
     private Transform[] endPoint;
+    private Animator leverAnimator;
  
     // References
     SpriteRenderer spr;
@@ -27,6 +28,8 @@ public class Lever_moving1 : ObjectProperty {
     private void Start()
     {
         spr = GetComponent<SpriteRenderer>();
+        leverAnimator = GetComponent<Animator>();
+        
         // handler의 크기입니다. Lever_moving이 아닙니다.
         base.rangeX = 0.7f + spr.bounds.size.x / 2;
         base.mustFaced = true;
@@ -53,11 +56,11 @@ public class Lever_moving1 : ObjectProperty {
         // exception
         if (point1Count != point2Count)
         {
-            Debug.Log("not match point1Count and p2 in Lever_moving1");
+            Debug.Log("not match point1Count and p2 in Lever_moving1  ");
         }
         if (movingCount != point1Count)
         {
-            Debug.Log("not match movingCount and p1 in Lever_moving1");
+            Debug.Log("not match movingCount and p1 in Lever_moving1  " + movingCount.ToString() +  " , " +point1Count.ToString() );
         }
 
         startPoint = new Transform[point1Count];
@@ -111,11 +114,13 @@ public class Lever_moving1 : ObjectProperty {
         if (isOn)
         {
             moveToPos = StartCoroutine(MoveToPoint(false));
+            leverAnimator.SetBool("isLeft", false);
             spr.sprite = offLeverSp;
         }
         else
         {
             moveToPos = StartCoroutine(MoveToPoint(true));
+            leverAnimator.SetBool("isLeft", true);
             spr.sprite = onLeverSp;
         }
 

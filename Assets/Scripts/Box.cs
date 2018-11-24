@@ -41,13 +41,13 @@ public class Box : ObjectProperty {
         player = GameObject.Find("Player").GetComponent<Transform>();
         distant = new Vector3( ( base.GetSize().x + pState.GetSizeX() ) / 2.0f, 0, 0);
 
-        Debug.Log("distant.x  "+ ( base.GetSize().x + pState.GetSizeX() ) / 2.0f);
+       // Debug.Log("distant.x  "+ ( base.GetSize().x + pState.GetSizeX() ) / 2.0f);
         bool isPlayerLocatedBoxsRight = player.position.x >= transform.position.x;
         bool isPlayerReversed = pState.GetIsReversed();
 
         heightDifference = new Vector3(0, pState.transform.position.y - transform.position.y);
 
-        Debug.Log("distant: " + distant);
+       // Debug.Log("distant: " + distant);
         if (isPlayerLocatedBoxsRight)
         {
             // player.position = transform.position + distant * distantErrorValue + heightDifference;
@@ -63,6 +63,7 @@ public class Box : ObjectProperty {
 
         horizonSpeedSave = pState.GetHorizonSpeed();
         pState.makeHorizonspeed(horizonSpeedSave * decelration);
+        pState.SetPlayerAmimationBool("isPulling", true);
 
     }
 
@@ -70,7 +71,7 @@ public class Box : ObjectProperty {
     {
         // if 멀면 리턴
         // else 아니면 이동
-
+        Debug.Log("isInteracting");
         bool isCloseWithPlayerX = Mathf.Abs(player.transform.position.x- this.transform.position.x) - ((pState.GetSizeX()+base.GetSize().x)/2.0f)< .2;
         if (!isCloseWithPlayerX)
         {
@@ -80,7 +81,7 @@ public class Box : ObjectProperty {
         }
 
         bool isCloseWithPlayerY = Mathf.Abs(player.transform.position.y - this.transform.position.y)  < .5;
-        Debug.Log("Y차이 :"+Mathf.Abs(player.transform.position.y - this.transform.position.y));
+        //Debug.Log("Y차이 :"+Mathf.Abs(player.transform.position.y - this.transform.position.y));
         if (!isCloseWithPlayerY)
         {
             Debug.Log("상자와의 Y축 거리가 너무 멉니다.");
@@ -88,12 +89,12 @@ public class Box : ObjectProperty {
             return;
         }
 
-        if (Input.GetKey(KeyCode.D))
+        if (pState.GetHorizon() > 0 || Input.GetKey(KeyCode.D))
             rigid.transform.Translate(Vector2.right * horizonSpeedSave * decelration * Time.deltaTime);
 
-        if (Input.GetKey(KeyCode.A))
+        if (pState.GetHorizon() < 0 || Input.GetKey(KeyCode.A))
             rigid.transform.Translate(Vector2.left * horizonSpeedSave * decelration * Time.deltaTime);
-
+            
     }
 
     override public void StopInteracting()
@@ -102,6 +103,7 @@ public class Box : ObjectProperty {
         pState.makeMove(true);
         pState.makeHorizonspeed(horizonSpeedSave);
         interactingState = false;
+        pState.SetPlayerAmimationBool("isPulling", false);
         rigid.mass = 100;
     }
 

@@ -48,6 +48,8 @@ public class Ladder : ObjectProperty {
 
     override public void IsInteracting()
     {
+        float pVertical = pState.GetVertical();
+
         if (player.position.y > maxY || player.position.y < minY )
         {
             StopInteracting();
@@ -57,10 +59,10 @@ public class Ladder : ObjectProperty {
             StopInteracting();
         }
 
-        if (Input.GetKey(KeyCode.W))
+        if (pVertical > 0 || Input.GetKey(KeyCode.W))
             pRigid.transform.Translate(Vector2.up * ladderSpeed * Time.deltaTime, Space.World);
 
-        if (Input.GetKey(KeyCode.S))
+        if (pVertical < 0 || Input.GetKey(KeyCode.S))
             pRigid.transform.Translate(Vector2.down * ladderSpeed * Time.deltaTime, Space.World);
     }
 
