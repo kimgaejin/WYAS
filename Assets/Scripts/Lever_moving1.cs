@@ -29,9 +29,9 @@ public class Lever_moving1 : ObjectProperty {
     {
         spr = GetComponent<SpriteRenderer>();
         leverAnimator = GetComponent<Animator>();
-        
+
         // handler의 크기입니다. Lever_moving이 아닙니다.
-        base.rangeX = 0.7f + spr.bounds.size.x / 2;
+        base.rangeX = 0.7f;// + spr.bounds.size.x / 2;
         base.mustFaced = true;
 
         // [link the movingObjects and p1, p2]

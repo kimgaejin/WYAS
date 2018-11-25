@@ -15,6 +15,8 @@ public class Box : ObjectProperty {
     private Vector3 heightDifference;
     private Vector3 collPosition;
 
+    private bool isPlayerLocatedBoxsRight;
+
     private void Start()
     {
         // 왜 scale이 3일때 transform.getChild(0).GetSpriteRenderer.bounds.size.x -> 4.15가 나올까?
@@ -42,7 +44,7 @@ public class Box : ObjectProperty {
         distant = new Vector3( ( base.GetSize().x + pState.GetSizeX() ) / 2.0f, 0, 0);
 
        // Debug.Log("distant.x  "+ ( base.GetSize().x + pState.GetSizeX() ) / 2.0f);
-        bool isPlayerLocatedBoxsRight = player.position.x >= transform.position.x;
+        isPlayerLocatedBoxsRight = player.position.x >= transform.position.x;
         bool isPlayerReversed = pState.GetIsReversed();
 
         heightDifference = new Vector3(0, pState.transform.position.y - transform.position.y);
@@ -63,7 +65,9 @@ public class Box : ObjectProperty {
 
         horizonSpeedSave = pState.GetHorizonSpeed();
         pState.makeHorizonspeed(horizonSpeedSave * decelration);
-        pState.SetPlayerAmimationBool("isPulling", true);
+
+        pState.SetPlayerAmimationBool("isPulling", false);
+        pState.SetPlayerAmimationBool("isPushing", true);
 
     }
 
@@ -90,11 +94,33 @@ public class Box : ObjectProperty {
         }
 
         if (pState.GetHorizon() > 0 || Input.GetKey(KeyCode.D))
+        {
             rigid.transform.Translate(Vector2.right * horizonSpeedSave * decelration * Time.deltaTime);
-
+            if (isPlayerLocatedBoxsRight)
+            {
+                pState.SetPlayerAmimationBool("isPulling", true);
+                pState.SetPlayerAmimationBool("isPushing", false);
+            }
+            else
+            {
+                pState.SetPlayerAmimationBool("isPulling", false);
+                pState.SetPlayerAmimationBool("isPushing", true);
+            }
+        }
         if (pState.GetHorizon() < 0 || Input.GetKey(KeyCode.A))
+        {
             rigid.transform.Translate(Vector2.left * horizonSpeedSave * decelration * Time.deltaTime);
-            
+            if (isPlayerLocatedBoxsRight)
+            {
+                pState.SetPlayerAmimationBool("isPulling", false);
+                pState.SetPlayerAmimationBool("isPushing", true);
+            }
+            else
+            {
+                pState.SetPlayerAmimationBool("isPulling", true);
+                pState.SetPlayerAmimationBool("isPushing", false);
+            }
+        }
     }
 
     override public void StopInteracting()
@@ -104,6 +130,7 @@ public class Box : ObjectProperty {
         pState.makeHorizonspeed(horizonSpeedSave);
         interactingState = false;
         pState.SetPlayerAmimationBool("isPulling", false);
+        pState.SetPlayerAmimationBool("isPushing", false);
         rigid.mass = 100;
     }
 

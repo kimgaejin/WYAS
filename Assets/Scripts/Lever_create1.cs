@@ -32,7 +32,7 @@ public class Lever_create1 : ObjectProperty
         leverAnimator = GetComponent<Animator>();
 
         // handler의 크기입니다. Lever_moving이 아닙니다.
-        base.rangeX = 0.7f + spr.bounds.size.x / 2;
+        base.rangeX = 0.7f;// + spr.bounds.size.x / 2;
         base.mustFaced = true;
 
         // dropObjectParent의 자식들 모두 가져오고, 배열할당, SetActive(false);

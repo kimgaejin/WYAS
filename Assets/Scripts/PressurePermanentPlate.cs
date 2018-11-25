@@ -80,8 +80,8 @@ public class PressurePermanentPlate : ObjectProperty {
             }
             catch { }
 
-            moveToPos = StartCoroutine(MoveToPoint(point2.position));
             plateAnimator.SetBool("isPressed", true);
+            moveToPos = StartCoroutine(MoveToPoint(point2.position));
             spr.sprite = onPlateSp;
 
         }

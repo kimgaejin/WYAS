@@ -204,13 +204,13 @@ public class PlayerState : MonoBehaviour {
         if (horizon > 0 || keyboardHorizon > 0)
         {
             isFacedR = true;
-            transform.transform.localScale = scaleRight;
+            if (!isInteracting) transform.transform.localScale = scaleRight;
             anim.SetBool("isWalking", true);
         }
         else if (horizon < 0 || keyboardHorizon < 0)
         {
             isFacedR = false;
-            transform.transform.localScale = scaleLeft;
+            if (!isInteracting) transform.transform.localScale = scaleLeft;
             anim.SetBool("isWalking", true);
         }
         else
@@ -344,6 +344,7 @@ public class PlayerState : MonoBehaviour {
                 curObjAct.StopInteracting();
                 curObj = null;
                 curObjAct = null;
+                isInteracting = false;
             }
             else
             {
@@ -383,7 +384,6 @@ public class PlayerState : MonoBehaviour {
                 curObjAct = curObj.GetComponent<ObjectProperty>();
                 isInteracting = true;
 
-                Debug.Log("이거냐? 시부렁태앙");
                 curObjAct.DoInteracting();
             }
         }
@@ -419,7 +419,6 @@ public class PlayerState : MonoBehaviour {
                 Collider2D adjacentCol = null;
                 foreach (Collider2D col in colls)
                 {
-                    Debug.Log("소개합니다: " + col.name);
                     ObjectProperty colState = col.GetComponent<ObjectProperty>();
                     if (colState.GetIsInRange() == true)
                     {
