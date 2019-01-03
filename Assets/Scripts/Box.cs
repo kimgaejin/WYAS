@@ -66,9 +66,10 @@ public class Box : ObjectProperty {
         horizonSpeedSave = pState.GetHorizonSpeed();
         pState.makeHorizonspeed(horizonSpeedSave * decelration);
 
-        pState.SetPlayerAmimationBool("isPulling", false);
-        pState.SetPlayerAmimationBool("isPushing", true);
-
+        //pState.SetPlayerAmimationBool("isPulling", false);
+        //pState.SetPlayerAmimationBool("isPushing", true);
+        pState.SetPlayerAmimationBool("pushing", true);
+        pState.SetPlayerAmimationBool("pulling", false);
     }
 
     override public void IsInteracting()
@@ -98,13 +99,17 @@ public class Box : ObjectProperty {
             rigid.transform.Translate(Vector2.right * horizonSpeedSave * decelration * Time.deltaTime);
             if (isPlayerLocatedBoxsRight)
             {
-                pState.SetPlayerAmimationBool("isPulling", true);
-                pState.SetPlayerAmimationBool("isPushing", false);
+               // pState.SetPlayerAmimationBool("isPulling", true);
+               // pState.SetPlayerAmimationBool("isPushing", false);
+                pState.SetPlayerAmimationBool("pulling", true);
+                pState.SetPlayerAmimationBool("pushing", false);
             }
             else
             {
-                pState.SetPlayerAmimationBool("isPulling", false);
-                pState.SetPlayerAmimationBool("isPushing", true);
+                // pState.SetPlayerAmimationBool("isPulling", false);
+                //  pState.SetPlayerAmimationBool("isPushing", true);
+                pState.SetPlayerAmimationBool("pushing", true);
+                pState.SetPlayerAmimationBool("pulling", false);
             }
         }
         if (pState.GetHorizon() < 0 || Input.GetKey(KeyCode.A))
@@ -112,13 +117,17 @@ public class Box : ObjectProperty {
             rigid.transform.Translate(Vector2.left * horizonSpeedSave * decelration * Time.deltaTime);
             if (isPlayerLocatedBoxsRight)
             {
-                pState.SetPlayerAmimationBool("isPulling", false);
-                pState.SetPlayerAmimationBool("isPushing", true);
+                // pState.SetPlayerAmimationBool("isPulling", false);
+                // pState.SetPlayerAmimationBool("isPushing", true);
+                pState.SetPlayerAmimationBool("pushing", true);
+                pState.SetPlayerAmimationBool("pulling", false);
             }
             else
             {
-                pState.SetPlayerAmimationBool("isPulling", true);
-                pState.SetPlayerAmimationBool("isPushing", false);
+                // pState.SetPlayerAmimationBool("isPulling", true);
+                // pState.SetPlayerAmimationBool("isPushing", false);
+                pState.SetPlayerAmimationBool("pulling", true);
+                pState.SetPlayerAmimationBool("pushing", false);
             }
         }
     }
@@ -129,8 +138,10 @@ public class Box : ObjectProperty {
         pState.makeMove(true);
         pState.makeHorizonspeed(horizonSpeedSave);
         interactingState = false;
-        pState.SetPlayerAmimationBool("isPulling", false);
-        pState.SetPlayerAmimationBool("isPushing", false);
+        //pState.SetPlayerAmimationBool("isPulling", false);
+        //pState.SetPlayerAmimationBool("isPushing", false);
+        pState.SetPlayerAmimationBool("pulling", false);
+        pState.SetPlayerAmimationBool("pushing", false);
         rigid.mass = 100;
     }
 

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DragonBones;
 
 public class PlayerState : MonoBehaviour {
 
@@ -13,10 +14,15 @@ public class PlayerState : MonoBehaviour {
     private SpriteRenderer spr;
     private Animator anim;
     private Collider2D coll;
+    private UnityArmatureComponent pArmature;
 
     private Collider2D curObj;
     private Collider2D adjacentObj;
     private ObjectProperty curObjAct;
+
+    // animation state;
+    Dictionary<string, bool> animState = new Dictionary<string, bool>();
+    string beforeAnimState;
 
     // setting
     private float horizonSpeed = 0.05f;
@@ -54,7 +60,6 @@ public class PlayerState : MonoBehaviour {
 
     private void Awake()
     {
-       
         InitializedSetting();
         InitializeBitSwitch();
         InitializeComponent();
@@ -68,7 +73,10 @@ public class PlayerState : MonoBehaviour {
         Move();
         keyboardInteract();
         keyboardJump();
-        
+        AnimationControl();
+
+
+
         CheckColliders();
         InteractWithJumping();
         KeepInteracting();
@@ -103,7 +111,7 @@ public class PlayerState : MonoBehaviour {
             // 사각형의 모서리까지 기본 각도. 45도
             float theta = 45.0f * Mathf.PI / 180.0f;
             // 오브젝트가 가지고있는 rotation.z 값에 따른 각도.
-            float angle = other.gameObject.GetComponent<Transform>().rotation.eulerAngles.z * Mathf.PI / 180.0f;
+            float angle = other.gameObject.GetComponent<UnityEngine.Transform>().rotation.eulerAngles.z * Mathf.PI / 180.0f;
             // 기본 각과 오브젝트 각 합산
             float calcAngle = theta + angle;
             if (calcAngle >= Mathf.PI / 2.0f) calcAngle %= Mathf.PI / 2.0f;
@@ -165,7 +173,8 @@ public class PlayerState : MonoBehaviour {
                 {
                     //Debug.Log("Clear");
                     isJumping = false;
-                    anim.SetBool("isFlying", false);
+                    //anim.SetBool("isFlying", false);
+                    animState["jumping"] = false;
                 }
             }
 
@@ -205,17 +214,19 @@ public class PlayerState : MonoBehaviour {
         {
             isFacedR = true;
             if (!isInteracting) transform.transform.localScale = scaleRight;
-            anim.SetBool("isWalking", true);
+            //anim.SetBool("isWalking", true);
+            animState["walk"] = true;
         }
         else if (horizon < 0 || keyboardHorizon < 0)
         {
             isFacedR = false;
             if (!isInteracting) transform.transform.localScale = scaleLeft;
-            anim.SetBool("isWalking", true);
+            //anim.SetBool("isWalking", true);
+            animState["walk"] = true;
         }
         else
         {
-            anim.SetBool("isWalking", false);
+            animState["walk"] = false;
         }
     }
 
@@ -234,9 +245,9 @@ public class PlayerState : MonoBehaviour {
 
         rigid.AddForce(arrow * jumpPower, ForceMode2D.Impulse);
         isJumping = true;
-        anim.SetTrigger("doJumping");
-        anim.SetBool("isFlying", true);
-
+        //anim.SetTrigger("doJumping");
+        //anim.SetBool("isFlying", true);
+        animState["jumping"] = true;
     }
 
     private void keyboardJump()
@@ -396,6 +407,10 @@ public class PlayerState : MonoBehaviour {
          * 사다리와 밧줄같은, 점프해야만 상호작용 할 수 있는 물체들(Layer:OBJECT_3ST)에게 적용 됨.
          * 점프중이며, 범위내에 있는 밧줄 혹은 사다리에게 바로 실행 됨.
          * + 위 아래키로도 가능하게 바뀜, 단 조이스틱은 적용 안됐음.
+         * 
+         * 
+         *  //안녕 난 서현이야! 주석을 남기러 왔지
+         *  //안녕 서현이!!
          */
 
         float keyboardVertical = 0;
@@ -518,6 +533,47 @@ public class PlayerState : MonoBehaviour {
         }
     }
 
+    private void AnimationControl()
+    {
+        Debug.Log("jumping: " + animState["jumping"].ToString());
+        if (animState["jumping"])
+        {
+            if (beforeAnimState != "jumping")
+                pArmature.animation.FadeIn("jumping", 0.25f);
+            beforeAnimState = "jumping";
+            return;
+        }
+        if (animState["pushing"])
+        {
+            
+            if (beforeAnimState != "pushing")
+                pArmature.animation.FadeIn("pushing", 0.25f);
+            beforeAnimState = "pushing";
+            return;
+        }
+        if (animState["pulling"])
+        {
+           
+            if (beforeAnimState != "pulling")
+                pArmature.animation.FadeIn("pulling", 0.25f);
+            beforeAnimState = "pulling";
+            return;
+        }
+        if (animState["walk"])
+        {
+            
+            if (beforeAnimState != "walk")
+                pArmature.animation.FadeIn("walk", 0.25f);
+            beforeAnimState = "walk";
+            return;
+        }
+       
+        if (beforeAnimState != "stand")
+            pArmature.animation.FadeIn("stand", 0.25f);
+        beforeAnimState = "stand";
+        return;
+    }
+
     //----------------------------- initializing
 
     private void InitializedSetting()
@@ -532,6 +588,12 @@ public class PlayerState : MonoBehaviour {
 
     private void InitializeBitSwitch()
     {
+        beforeAnimState = "none";
+        animState["walk"] = false;
+        animState["jumping"] = false;
+        animState["pushing"] = false;
+        animState["pulling"] = false;
+
         isFixed = false;
         canMove = true;
         canJump = true;
@@ -545,7 +607,8 @@ public class PlayerState : MonoBehaviour {
         rigid = this.gameObject.GetComponent<Rigidbody2D>();
         // pGraphic 이엿음
         spr = this.transform.Find("playerGHP").GetComponent<SpriteRenderer>();
-        anim = this.transform.Find("playerGHP").GetComponent<Animator>();
+        //anim = this.transform.Find("playerGHP").GetComponent<Animator>();
+        pArmature = this.transform.Find("PlayerArmature").GetComponent<UnityArmatureComponent>();
         coll = this.GetComponent<Collider2D>();
         curObj = null;
         isFacedR = true;
@@ -649,7 +712,8 @@ public class PlayerState : MonoBehaviour {
 
     public void SetPlayerAmimationBool(string setting, bool value)
     {
-        anim.SetBool(setting, value);
+        //anim.SetBool(setting, value);
+        animState[setting] = value;
     }
 
     public float GetHorizon()
