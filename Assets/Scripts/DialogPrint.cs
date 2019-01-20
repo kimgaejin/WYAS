@@ -85,7 +85,7 @@ public class DialogPrint : MonoBehaviour {
 
         try
         {
-            PlayerDialog.transform.position = PlayerTrans.position + new Vector3(1.5f, 2, 0);
+            PlayerDialog.transform.position = PlayerTrans.position + new Vector3(2.5f, 2, 0);
         }
         catch { }
     }

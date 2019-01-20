@@ -46,7 +46,7 @@ public class EndFlag : MonoBehaviour {
         stage = in_stage;
     }
 
-    private void ReachThisPoint()
+    public void ReachThisPoint()
     {
         if (isThrough == true)
             return;

@@ -74,7 +74,7 @@ public class PlayerState : MonoBehaviour {
         keyboardInteract();
         keyboardJump();
         AnimationControl();
-
+        //Debug.Log("isJumping " + isJumping.ToString());
 
 
         CheckColliders();
@@ -109,7 +109,7 @@ public class PlayerState : MonoBehaviour {
             // 원점부터 모서리까지의 기본거리.
             float diagonalLength = Mathf.Sqrt(otherSizeX * otherSizeX + otherSizeY * otherSizeY) / 2.0f ;
             // 사각형의 모서리까지 기본 각도. 45도
-            float theta = 45.0f * Mathf.PI / 180.0f;
+            float theta = (45.0f + other.transform.localRotation.eulerAngles.z) * Mathf.PI / 180.0f;
             // 오브젝트가 가지고있는 rotation.z 값에 따른 각도.
             float angle = other.gameObject.GetComponent<UnityEngine.Transform>().rotation.eulerAngles.z * Mathf.PI / 180.0f;
             // 기본 각과 오브젝트 각 합산
@@ -135,8 +135,10 @@ public class PlayerState : MonoBehaviour {
                                         , 0);
 
                 // 플레이어의 발가락 좌표
-                float pSizeX = spr.size.x;
-                float pSizeY = spr.size.y;
+                // float pSizeX = spr.size.x;
+                // float pSizeY = spr.size.y;
+                float pSizeX = 1.0f;
+                float pSizeY = 1.5f;
                 float pRotationZ = this.transform.rotation.eulerAngles.z * Mathf.PI / 180.0f;
                 //if (pRotationZ > 180) pRotationZ -= 360;
                 Vector3 playerFoot = new Vector3( this.transform.position.x + (Mathf.Sin(pRotationZ) * pSizeY/2.0f)
@@ -161,15 +163,15 @@ public class PlayerState : MonoBehaviour {
                 //Debug.Log("[P1.y , P2.y]: ( " + P1.y + " , " + P2.y + " )");
                 //Debug.Log("[P1.x ] : " + P1.x + "  [P2.x ] : " + P2.x);
                 //Debug.Log("[gradient] : " + gradient);
-                //Debug.Log("[surfaceY] : " + surfaceY + "  [playerFoot] : " + playerFoot);
+               // Debug.Log("[surfaceY] : " + surfaceY + "  [playerFoot] : " + playerFoot);
                 //Debug.Log("[pRotationZ] : " + pRotationZ );
                 //Debug.Log("[sin cos0] : " + Mathf.Sin(pRotationZ * Mathf.PI / 180.0f) +" "+ Mathf.Cos(pRotationZ) * Mathf.PI / 180.0f);
                 //Debug.Log("[playerVec] : " + playerVec );
                // Debug.Log("On X " + isOnGroundX + "/ On Y " + isOnGroundY);
-
+               
                 if (isOnGroundX 
                  && isOnGroundY 
-                 && rigid.velocity.y <= 0.05f)
+                 && rigid.velocity.y <= 0.00f)
                 {
                     //Debug.Log("Clear");
                     isJumping = false;
@@ -507,6 +509,9 @@ public class PlayerState : MonoBehaviour {
 
     private void RotatePlayerGPH(bool reverseType)
     {
+        /* 중력장용으로 설계했던 함수지만 현재 안씀
+         * 
+         */
         if (reverseType == true)
         {
             if (isReversed == false)
@@ -514,9 +519,7 @@ public class PlayerState : MonoBehaviour {
                // transform.localRotation = Quaternion.Euler(0, 180, 180);
                 // -> 이동도 바뀜
                 Debug.Log("rever1");
-                //  StartCoroutine("RotateAnimation");
-               // spr.flipY = true;
-               // spr.flipX = false;
+
             }
 
         }
@@ -525,17 +528,13 @@ public class PlayerState : MonoBehaviour {
             if (isReversed == true)
             {
                 Debug.Log("rever2");
-                //transform.localRotation = Quaternion.Euler(0, 0, 0);
-                // StartCoroutine("RotateAnimation");
-                //spr.flipY = false;
-               // spr.flipX = true;
+
             }
         }
     }
 
     private void AnimationControl()
     {
-        Debug.Log("jumping: " + animState["jumping"].ToString());
         if (animState["jumping"])
         {
             if (beforeAnimState != "jumping")
@@ -543,6 +542,7 @@ public class PlayerState : MonoBehaviour {
             beforeAnimState = "jumping";
             return;
         }
+        /*
         if (animState["pushing"])
         {
             
@@ -557,6 +557,23 @@ public class PlayerState : MonoBehaviour {
             if (beforeAnimState != "pulling")
                 pArmature.animation.FadeIn("pulling", 0.25f);
             beforeAnimState = "pulling";
+            return;
+        }
+        */
+        if (animState["push"])
+        {
+
+            if (beforeAnimState != "push")
+                pArmature.animation.FadeIn("push", 0.25f);
+            beforeAnimState = "push";
+            return;
+        }
+        if (animState["pull"])
+        {
+
+            if (beforeAnimState != "pull")
+                pArmature.animation.FadeIn("pull", 0.25f);
+            beforeAnimState = "pull";
             return;
         }
         if (animState["walk"])
@@ -593,6 +610,9 @@ public class PlayerState : MonoBehaviour {
         animState["jumping"] = false;
         animState["pushing"] = false;
         animState["pulling"] = false;
+        animState["push"] = false;
+        animState["pull"] = false;
+
 
         isFixed = false;
         canMove = true;
@@ -606,7 +626,7 @@ public class PlayerState : MonoBehaviour {
     {
         rigid = this.gameObject.GetComponent<Rigidbody2D>();
         // pGraphic 이엿음
-        spr = this.transform.Find("playerGHP").GetComponent<SpriteRenderer>();
+        //spr = this.transform.Find("playerGHP").GetComponent<SpriteRenderer>();
         //anim = this.transform.Find("playerGHP").GetComponent<Animator>();
         pArmature = this.transform.Find("PlayerArmature").GetComponent<UnityArmatureComponent>();
         coll = this.GetComponent<Collider2D>();
@@ -681,12 +701,14 @@ public class PlayerState : MonoBehaviour {
 
     public float GetSizeX()
     {
-        return spr.bounds.size.x;
+        //return spr.bounds.size.x;
+        return 1.0f;
     }
 
     public float GetSizeY()
     {
-        return spr.bounds.size.y;
+        //return spr.bounds.size.y;
+        return 1.5f;
     }
 
     public float GetVerticalSpeed()

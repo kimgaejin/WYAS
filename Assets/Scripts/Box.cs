@@ -76,7 +76,7 @@ public class Box : ObjectProperty {
     {
         // if 멀면 리턴
         // else 아니면 이동
-        Debug.Log("isInteracting");
+        //Debug.Log("isInteracting");
         bool isCloseWithPlayerX = Mathf.Abs(player.transform.position.x- this.transform.position.x) - ((pState.GetSizeX()+base.GetSize().x)/2.0f)< .2;
         if (!isCloseWithPlayerX)
         {
@@ -99,36 +99,41 @@ public class Box : ObjectProperty {
             rigid.transform.Translate(Vector2.right * horizonSpeedSave * decelration * Time.deltaTime);
             if (isPlayerLocatedBoxsRight)
             {
-               // pState.SetPlayerAmimationBool("isPulling", true);
-               // pState.SetPlayerAmimationBool("isPushing", false);
-                pState.SetPlayerAmimationBool("pulling", true);
-                pState.SetPlayerAmimationBool("pushing", false);
+                // pState.SetPlayerAmimationBool("isPulling", true);
+                // pState.SetPlayerAmimationBool("isPushing", false);
+                pState.SetPlayerAmimationBool("pull", true);
+                pState.SetPlayerAmimationBool("push", false);
             }
             else
             {
                 // pState.SetPlayerAmimationBool("isPulling", false);
                 //  pState.SetPlayerAmimationBool("isPushing", true);
-                pState.SetPlayerAmimationBool("pushing", true);
-                pState.SetPlayerAmimationBool("pulling", false);
+                pState.SetPlayerAmimationBool("push", true);
+                pState.SetPlayerAmimationBool("pull", false);
             }
         }
-        if (pState.GetHorizon() < 0 || Input.GetKey(KeyCode.A))
+        else if (pState.GetHorizon() < 0 || Input.GetKey(KeyCode.A))
         {
             rigid.transform.Translate(Vector2.left * horizonSpeedSave * decelration * Time.deltaTime);
             if (isPlayerLocatedBoxsRight)
             {
                 // pState.SetPlayerAmimationBool("isPulling", false);
                 // pState.SetPlayerAmimationBool("isPushing", true);
-                pState.SetPlayerAmimationBool("pushing", true);
-                pState.SetPlayerAmimationBool("pulling", false);
+                pState.SetPlayerAmimationBool("push", true);
+                pState.SetPlayerAmimationBool("pull", false);
             }
             else
             {
                 // pState.SetPlayerAmimationBool("isPulling", true);
                 // pState.SetPlayerAmimationBool("isPushing", false);
-                pState.SetPlayerAmimationBool("pulling", true);
-                pState.SetPlayerAmimationBool("pushing", false);
+                pState.SetPlayerAmimationBool("pull", true);
+                pState.SetPlayerAmimationBool("push", false);
             }
+        }
+        else
+        {
+            pState.SetPlayerAmimationBool("push", false);
+            pState.SetPlayerAmimationBool("pull", false);
         }
     }
 
@@ -140,8 +145,8 @@ public class Box : ObjectProperty {
         interactingState = false;
         //pState.SetPlayerAmimationBool("isPulling", false);
         //pState.SetPlayerAmimationBool("isPushing", false);
-        pState.SetPlayerAmimationBool("pulling", false);
-        pState.SetPlayerAmimationBool("pushing", false);
+        pState.SetPlayerAmimationBool("push", false);
+        pState.SetPlayerAmimationBool("pull", false);
         rigid.mass = 100;
     }
 

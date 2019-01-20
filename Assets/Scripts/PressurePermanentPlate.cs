@@ -6,9 +6,11 @@ public class PressurePermanentPlate : ObjectProperty {
 
     private SpriteRenderer spr;
     // Transforms
-    private Transform movingObject;
-    private Transform point1;
-    private Transform point2;
+    private Transform[] movingObjectArray;
+    private Transform[] startPoint;
+    private Transform[] endPoint;
+
+    private int movingCount = 0;
 
     private Animator plateAnimator;
     private Sprite onPlateSp;
@@ -33,25 +35,8 @@ public class PressurePermanentPlate : ObjectProperty {
         base.rangeX = spr.bounds.size.x / 2;
         base.mustFaced = false;
 
-        movingObject = transform.GetChild(1).transform;
-        point1 = transform.Find("point1").transform;
-        point2 = transform.Find("point2").transform;
-        try
-        {
-            Color p1C;
-            p1C = point1.gameObject.GetComponent<SpriteRenderer>().color;
-            p1C.a = 0;
-            point1.gameObject.GetComponent<SpriteRenderer>().color = p1C;
+        GetObjectAndPointArray();
 
-            Color p2C;
-            p2C = point2.gameObject.GetComponent<SpriteRenderer>().color;
-            p2C.a = 0;
-            point2.gameObject.GetComponent<SpriteRenderer>().color = p2C;
-        }
-        catch { }
-        movingObject.position = point1.position;
-
-        movingVector = Vector3.Normalize(point1.position - point2.position);
         onPlateSp = Resources.Load<Sprite>("Sprites/" + onPlateSpName);
         offPlateSp = Resources.Load<Sprite>("Sprites/" + offPlateSpName);
     }
@@ -81,35 +66,120 @@ public class PressurePermanentPlate : ObjectProperty {
             catch { }
 
             plateAnimator.SetBool("isPressed", true);
-            moveToPos = StartCoroutine(MoveToPoint(point2.position));
+            moveToPos = StartCoroutine(MoveToPoint());
             spr.sprite = onPlateSp;
 
         }
     }
 
-    private IEnumerator MoveToPoint(Vector3 point)
+    private IEnumerator MoveToPoint()
     {
-        Vector3 arrow = point1.position - point2.position;
-        if (point2.position == point) arrow *= -1;
-        float xpp = arrow.x * movingSpeed * Time.deltaTime;
-        float ypp = arrow.y * movingSpeed * Time.deltaTime;
+        Transform movingObject;
+        Transform point1;
+        Transform point2;
+
+        Vector3 arrow = Vector3.zero;
+        float xpp = 0;
+        float ypp = 0;
 
         while (true)
         {
-            bool inX = (movingObject.position.x + xpp <= point1.position.x && point2.position.x - xpp <= movingObject.position.x)
-                || (movingObject.position.x + xpp <= point2.position.x && point1.position.x - xpp <= movingObject.position.x);
-            bool inY = ((movingObject.position.y + ypp <= point1.position.y && point2.position.y - ypp <= movingObject.position.y)
-                    || (movingObject.position.y + ypp <= point2.position.y && point1.position.y - ypp <= movingObject.position.y));
-
-            if (!inX || !inY)
+            for (int i = 0; i < movingCount; i++)
             {
-                movingObject.position = point;
-                movingObject.transform.Translate(Vector3.zero, Space.Self);
-                yield break;
-            }
+                movingObject = movingObjectArray[i];
+                point1 = startPoint[i];
+                point2 = endPoint[i];
 
-            movingObject.transform.Translate(arrow * movingSpeed * Time.deltaTime, Space.Self);
+                arrow = point2.position - point1.position;
+                xpp = arrow.x * movingSpeed * Time.deltaTime;
+                ypp = arrow.y * movingSpeed * Time.deltaTime;
+
+                bool inX = (movingObject.position.x + xpp <= point1.position.x && point2.position.x - xpp <= movingObject.position.x)
+                    || (movingObject.position.x + xpp <= point2.position.x && point1.position.x - xpp <= movingObject.position.x);
+                bool inY = ((movingObject.position.y + ypp <= point1.position.y && point2.position.y - ypp <= movingObject.position.y)
+                        || (movingObject.position.y + ypp <= point2.position.y && point1.position.y - ypp <= movingObject.position.y));
+
+                if (!inX || !inY)
+                {
+                    movingObject.position = point2.position;
+                    yield break;
+                }
+                else
+                {
+                    movingObject.transform.Translate(arrow * movingSpeed * Time.deltaTime, Space.Self);
+                }
+            }
             yield return new WaitForSeconds(Time.deltaTime);
         }
+    }
+
+    private void GetObjectAndPointArray()
+    {
+        /*
+        // [link the movingObjects and p1, p2]
+        Transform movingObjectsParent;
+        movingObjectsParent = transform.FindChild("movingObjects");
+        movingCount = movingObjectsParent.childCount;
+        movingObjectArray = new Transform[movingCount];
+        for (int i = 0; i < movingCount; i++)
+        {
+            movingObjectArray[i] = movingObjectsParent.GetChild(i);
+        }
+
+        int point1Count;
+        int point2Count;
+        Transform point1Parent;
+        Transform point2Parent;
+        point1Parent = transform.parent.Find("point1Parent");
+        point2Parent = transform.parent.Find("point2Parent");
+        point1Count = point1Parent.childCount;
+        point2Count = point2Parent.childCount;
+
+        // exception
+        if (point1Count != point2Count)
+        {
+            Debug.Log("not match point1Count and p2 in Lever_moving1  ");
+        }
+        if (movingCount != point1Count)
+        {
+            Debug.Log("not match movingCount and p1 in Lever_moving1  " + movingCount.ToString() + " , " + point1Count.ToString());
+        }
+
+        startPoint = new Transform[point1Count];
+        endPoint = new Transform[point2Count];
+        for (int i = 0; i < point1Count; i++)
+        {
+            startPoint[i] = point1Parent.GetChild(i);
+            endPoint[i] = point2Parent.GetChild(i);
+        }
+
+
+        // [hide the points' graphics]
+
+        int repeat = startPoint.Length;
+        for (int i = 0; i < repeat; i++)
+        {
+            Color p1C;
+            p1C = startPoint[i].gameObject.GetComponent<SpriteRenderer>().color;
+            p1C.a = 0;
+            startPoint[i].gameObject.GetComponent<SpriteRenderer>().color = p1C;
+        }
+        repeat = endPoint.Length;
+        for (int i = 0; i < repeat; i++)
+        {
+            Color p1C;
+            p1C = endPoint[i].gameObject.GetComponent<SpriteRenderer>().color;
+            p1C.a = 0;
+            endPoint[i].gameObject.GetComponent<SpriteRenderer>().color = p1C;
+        }
+
+
+        // [set the movingObjects' init position]
+        repeat = movingObjectArray.Length;
+        for (int i = 0; i < repeat; i++)
+        {
+            movingObjectArray[i].position = startPoint[i].position;
+        }
+        */
     }
 }
