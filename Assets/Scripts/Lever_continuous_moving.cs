@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class Lever_continuous_moving : LeverParent {
 
-    // * 레버를 처음 on 했을 때 물체를 움직입니다.
-    // * 레버가 off되더라도 물체는 끝까지 이동합니다.
+
+    [Header("" +
+        "레버를 처음 on 했을 때 물체를 움직입니다." +
+        "레버가 off되더라도 물체는 끝까지 이동합니다.")]
 
     private bool firstTurnOn = false;
     private Coroutine moveToPos;

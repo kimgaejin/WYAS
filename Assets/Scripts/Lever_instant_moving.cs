@@ -5,8 +5,10 @@ using UnityEngine;
 public class Lever_instant_moving : LeverParent {
 
 
-    // * 레버를 on 됐을 때 물체를 움직입니다.
-    // * 레버가 off 물체가 초기 위치로 돌아갑니다.
+    [Header("" +
+        "레버를 on 됐을 때 물체를 움직입니다." +
+        "레버가 off 물체가 초기 위치로 돌아갑니다.")]
+
 
     private Coroutine moveToPos;
     private float movingSpeed = 1.0f;

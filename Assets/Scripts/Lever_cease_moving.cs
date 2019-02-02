@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class Lever_cease_moving : LeverParent {
 
-
-    // * 레버를 on 됐을 때 물체를 움직입니다.
-    // * 레버가 off 된다면 물체는 그자리에서 멈춥니다.
+    [Header("" +
+        "레버를 on 했을 때 물체를 움직입니다." +
+        "레버가 off 된다면 물체는 그자리에서 멈춥니다.")]
 
     private Coroutine moveToPos;
     private float movingSpeed = 1.0f;
